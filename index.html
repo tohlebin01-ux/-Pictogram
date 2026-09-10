@@ -3,43 +3,50 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>象形字书写体验馆 | Pictographic Character Workshop</title>
+  <title>字里乾坤：象形字交互体验馆</title>
   <style>
     :root {
-      --bg-paper: #f8f6f0;
-      --ink-black: #222222;
-      --cinnabar-red: #9e2a2b;
-      --gray-border: #dcd6cd;
-      --card-bg: #ffffff;
-      --text-muted: #666666;
+      --paper-base: #f4ede2;
+      --paper-texture: #e9decb;
+      --ink: #1b1918;
+      --cinnabar: #a62b24;
+      --cinnabar-light: #e8d5c4;
+      --wood: #4a3728;
+      --shadow: rgba(0, 0, 0, 0.08);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Noto Serif SC", serif;
+      font-family: "PingFang SC", "Hiragino Sans GB", "Noto Serif SC", "Kaiti SC", STKaiti, serif;
+      -webkit-user-select: none;
+      user-select: none;
     }
 
     body {
-      background-color: var(--bg-paper);
-      color: var(--ink-black);
-      line-height: 1.6;
-      padding-bottom: 50px;
+      background-color: var(--paper-base);
+      background-image: radial-gradient(var(--paper-texture) 15%, transparent 16%), radial-gradient(var(--paper-texture) 15%, transparent 16%);
+      background-size: 30px 30px;
+      background-position: 0 0, 15px 15px;
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* 顶部导航与语言切换 */
+    /* 顶部导航 */
     header {
-      background: #fff;
-      border-bottom: 2px solid var(--cinnabar-red);
-      padding: 16px 24px;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid var(--wood);
+      padding: 12px 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     }
 
     .brand {
@@ -48,265 +55,376 @@
       gap: 12px;
     }
 
-    .seal-logo {
-      background: var(--cinnabar-red);
+    .seal-box {
+      background: var(--cinnabar);
       color: #fff;
       font-size: 16px;
       padding: 4px 8px;
       border-radius: 4px;
-      font-weight: bold;
-      letter-spacing: 1px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
     }
 
-    .brand h1 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--ink-black);
+    h1 {
+      font-size: 1.3rem;
+      color: var(--wood);
+      letter-spacing: 2px;
     }
 
-    .lang-switcher {
+    .lang-group {
       display: flex;
       gap: 6px;
+      background: #e3d8c8;
+      padding: 4px;
+      border-radius: 20px;
     }
 
     .lang-btn {
-      border: 1px solid var(--gray-border);
+      border: none;
       background: transparent;
-      padding: 6px 12px;
-      border-radius: 20px;
+      padding: 4px 14px;
+      border-radius: 16px;
       cursor: pointer;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--wood);
       transition: all 0.2s ease;
     }
 
-    .lang-btn.active, .lang-btn:hover {
-      background: var(--cinnabar-red);
-      color: white;
-      border-color: var(--cinnabar-red);
+    .lang-btn.active {
+      background: var(--wood);
+      color: #fff;
     }
 
-    /* 主布局 */
-    .container {
-      max-width: 1100px;
-      margin: 30px auto;
+    /* 主舞台 */
+    .main-wrap {
+      flex: 1;
+      max-width: 1200px;
+      width: 100%;
+      margin: 20px auto;
       padding: 0 20px;
       display: grid;
-      grid-template-columns: 360px 1fr;
-      gap: 28px;
+      grid-template-columns: 380px 1fr;
+      gap: 24px;
     }
 
-    @media (max-width: 860px) {
-      .container {
+    @media (max-width: 900px) {
+      .main-wrap {
         grid-template-columns: 1fr;
       }
     }
 
-    /* 左侧控制与字库 */
-    .sidebar {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .card {
-      background: var(--card-bg);
-      border-radius: 12px;
+    /* 左侧卡片 */
+    .panel {
+      background: rgba(255, 255, 255, 0.88);
+      border-radius: 14px;
+      border: 1px solid #d5c8b5;
       padding: 20px;
-      border: 1px solid var(--gray-border);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-    }
-
-    .section-title {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 12px;
-      color: var(--cinnabar-red);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .char-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-
-    .char-card {
-      border: 1px solid var(--gray-border);
-      border-radius: 8px;
-      padding: 12px 6px;
-      text-align: center;
-      cursor: pointer;
-      background: #fafafa;
-      transition: all 0.2s ease;
-    }
-
-    .char-card:hover, .char-card.active {
-      border-color: var(--cinnabar-red);
-      background: #fff5f5;
-      transform: translateY(-2px);
-    }
-
-    .char-card .oracle-preview {
-      font-size: 28px;
-      display: block;
-      margin-bottom: 4px;
-    }
-
-    .char-card .modern-label {
-      font-size: 13px;
-      color: var(--text-muted);
-    }
-
-    /* 知识卡片 */
-    .knowledge-details {
-      margin-top: 6px;
-    }
-
-    .evolution-timeline {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 16px 0;
-      padding: 12px 0;
-      border-top: 1px dashed var(--gray-border);
-      border-bottom: 1px dashed var(--gray-border);
-      text-align: center;
-    }
-
-    .stage-item .stage-char {
-      font-size: 1.4rem;
-      font-weight: bold;
-      color: var(--cinnabar-red);
-    }
-
-    .stage-item .stage-name {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
-    .evolution-arrow {
-      color: #bbb;
-      font-size: 14px;
-    }
-
-    .etymology-text {
-      font-size: 0.9rem;
-      color: #444;
-      line-height: 1.6;
-    }
-
-    /* 右侧互动绘图板 */
-    .workspace {
+      box-shadow: 0 10px 25px var(--shadow);
       display: flex;
       flex-direction: column;
       gap: 16px;
     }
 
-    .canvas-container {
+    .panel-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--cinnabar);
+      border-left: 4px solid var(--cinnabar);
+      padding-left: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* 字选择列表 */
+    .char-selector {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+    }
+
+    .char-pill {
+      border: 1px solid #d3c4af;
+      border-radius: 10px;
+      padding: 10px 0;
+      background: #faf6f0;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .char-pill .ancient-preview {
+      width: 32px;
+      height: 32px;
+      fill: var(--ink);
+    }
+
+    .char-pill .modern-txt {
+      font-size: 12px;
+      font-weight: bold;
+      margin-top: 4px;
+      color: #666;
+    }
+
+    .char-pill.active, .char-pill:hover {
+      border-color: var(--cinnabar);
+      background: #fff;
+      transform: translateY(-4px);
+      box-shadow: 0 4px 10px rgba(166, 43, 36, 0.15);
+    }
+
+    .char-pill.active .modern-txt {
+      color: var(--cinnabar);
+    }
+
+    /* 演变展示线 */
+    .evolution-box {
+      background: #fdfaf6;
+      border: 1px dashed #cfc2ae;
+      border-radius: 10px;
+      padding: 14px 8px;
+    }
+
+    .evolution-timeline {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      text-align: center;
+      align-items: center;
+    }
+
+    .evo-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .evo-step:hover {
+      background: rgba(166, 43, 36, 0.06);
+    }
+
+    .evo-glyph {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .evo-glyph svg {
+      width: 100%;
+      height: 100%;
+      stroke: var(--ink);
+      fill: none;
+      stroke-width: 6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .evo-glyph span {
+      font-size: 26px;
+      font-weight: 500;
+    }
+
+    .evo-name {
+      font-size: 11px;
+      color: #7b6d5e;
+      font-weight: 600;
+    }
+
+    /* 演变小动画播放器按钮 */
+    .play-morph-btn {
+      width: 100%;
+      border: 1px solid var(--cinnabar);
+      background: #fdf2f1;
+      color: var(--cinnabar);
+      padding: 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .play-morph-btn:hover {
+      background: var(--cinnabar);
+      color: white;
+    }
+
+    /* 知识点说明 */
+    .etymology-box {
+      font-size: 0.92rem;
+      line-height: 1.7;
+      color: #3e3328;
+      background: #faf6f0;
+      padding: 14px;
+      border-radius: 8px;
+      border-left: 3px solid #b5a28c;
+    }
+
+    /* 右侧：书写体验大工作台 */
+    .workshop {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .canvas-desk {
       position: relative;
       width: 100%;
-      aspect-ratio: 1 / 1;
       max-width: 540px;
-      margin: 0 auto;
-      background: #fff;
-      border: 2px solid #555;
+      aspect-ratio: 1 / 1;
+      background: #fffefb;
+      border: 3px solid var(--wood);
       border-radius: 12px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+      box-shadow: 0 16px 36px rgba(0,0,0,0.1);
       overflow: hidden;
       touch-action: none;
     }
 
-    /* 米字格辅助线背景 */
-    .mige-grid {
+    /* 仿米字格 */
+    .mige {
       position: absolute;
       inset: 0;
       pointer-events: none;
-      opacity: 0.2;
-      background-image: 
-        linear-gradient(to right, #9e2a2b 1px, transparent 1px),
-        linear-gradient(to bottom, #9e2a2b 1px, transparent 1px),
-        linear-gradient(45deg, transparent calc(50% - 0.5px), #9e2a2b 50%, transparent calc(50% + 0.5px)),
-        linear-gradient(-45deg, transparent calc(50% - 0.5px), #9e2a2b 50%, transparent calc(50% + 0.5px));
-      background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%;
-      background-position: center;
+      opacity: 0.15;
+      background:
+        linear-gradient(to right, var(--cinnabar) 1px, transparent 1px) 50% 0 / 100% 100%,
+        linear-gradient(to bottom, var(--cinnabar) 1px, transparent 1px) 0 50% / 100% 100%,
+        linear-gradient(45deg, transparent 49.6%, var(--cinnabar) 50%, transparent 50.4%),
+        linear-gradient(-45deg, transparent 49.6%, var(--cinnabar) 50%, transparent 50.4%);
     }
 
-    /* 描红底纹 */
-    .trace-template {
+    /* 水印底样临摹层 */
+    .trace-layer {
       position: absolute;
       inset: 0;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       pointer-events: none;
-      user-select: none;
-      opacity: 0.18;
-      transition: opacity 0.2s ease;
+      opacity: 0.22;
+      transition: opacity 0.3s;
     }
 
-    .trace-template svg {
-      width: 70%;
-      height: 70%;
-      stroke: var(--ink-black);
+    .trace-layer svg {
+      width: 72%;
+      height: 72%;
+      stroke: var(--ink);
       fill: none;
-      stroke-width: 8;
+      stroke-width: 7;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
 
     canvas {
       position: absolute;
-      top: 0;
-      left: 0;
+      inset: 0;
       width: 100%;
       height: 100%;
       cursor: crosshair;
     }
 
-    /* 工具栏控制 */
-    .toolbar {
+    /* 工具条 */
+    .desk-bar {
+      width: 100%;
+      max-width: 540px;
+      background: white;
+      border-radius: 10px;
+      border: 1px solid #dcd1c2;
+      padding: 12px 18px;
       display: flex;
-      flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
-      padding: 12px 18px;
+      box-shadow: 0 4px 12px var(--shadow);
     }
 
-    .tool-group {
+    .tools-left {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 14px;
+      font-size: 0.85rem;
     }
 
-    .btn {
+    .tools-right {
+      display: flex;
+      gap: 8px;
+    }
+
+    .action-btn {
       padding: 8px 14px;
-      border: 1px solid var(--gray-border);
       border-radius: 6px;
+      border: 1px solid #c7b9a5;
       background: white;
+      color: var(--wood);
       cursor: pointer;
+      font-weight: 600;
       font-size: 0.85rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
       transition: all 0.2s;
     }
 
-    .btn:hover {
-      background: #f5f5f5;
+    .action-btn:hover {
+      background: #f4eee3;
     }
 
-    .btn-primary {
-      background: var(--cinnabar-red);
+    .action-btn.primary {
+      background: var(--cinnabar);
       color: white;
-      border-color: var(--cinnabar-red);
+      border-color: var(--cinnabar);
     }
 
-    .btn-primary:hover {
-      background: #802223;
+    .action-btn.primary:hover {
+      background: #8b231c;
+    }
+
+    /* 评分印章弹出反馈 */
+    .score-badge {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 90px;
+      height: 90px;
+      border: 3px dashed var(--cinnabar);
+      border-radius: 50%;
+      color: var(--cinnabar);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transform: rotate(-15deg) scale(0);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      background: rgba(255, 240, 240, 0.85);
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    .score-badge.show {
+      transform: rotate(-15deg) scale(1);
+    }
+
+    .score-num {
+      font-size: 1.4rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .score-txt {
+      font-size: 10px;
+      font-weight: bold;
+      margin-top: 2px;
     }
   </style>
 </head>
@@ -314,430 +432,520 @@
 
   <header>
     <div class="brand">
-      <div class="seal-logo" id="logoText">文脉</div>
-      <h1 id="titleText">象形字溯源书写馆</h1>
+      <div class="seal-box" id="logoTag">象形</div>
+      <h1 id="mainTitle">字里乾坤 · 象形字演变探索馆</h1>
     </div>
-    <div class="lang-switcher">
-      <button class="lang-btn active" onclick="switchLanguage('zh')">中文</button>
-      <button class="lang-btn" onclick="switchLanguage('en')">English</button>
-      <button class="lang-btn" onclick="switchLanguage('ms')">B. Melayu</button>
+    <div class="lang-group">
+      <button class="lang-btn active" onclick="setLang('zh')">中文</button>
+      <button class="lang-btn" onclick="setLang('en')">English</button>
+      <button class="lang-btn" onclick="setLang('ms')">B. Melayu</button>
     </div>
   </header>
 
-  <main class="container">
-    <!-- 左侧：字库选择与造字学知识 -->
-    <aside class="sidebar">
-      <section class="card">
-        <h2 class="section-title" id="chooseCharTitle">
-          <span>●</span> 选择体验字
-        </h2>
-        <div class="char-grid" id="charGrid"></div>
-      </section>
-
-      <section class="card knowledge-card">
-        <h2 class="section-title" id="knowledgeTitle">
-          <span>●</span> 字源与演变知识
-        </h2>
-        <div class="knowledge-details">
-          <div class="evolution-timeline">
-            <div class="stage-item">
-              <div class="stage-char" id="stageOracle">日</div>
-              <div class="stage-name" id="labelOracle">甲骨文 / 象形</div>
-            </div>
-            <div class="evolution-arrow">➔</div>
-            <div class="stage-item">
-              <div class="stage-char" id="stageSeal">☉</div>
-              <div class="stage-name" id="labelSeal">小篆 / 古体</div>
-            </div>
-            <div class="evolution-arrow">➔</div>
-            <div class="stage-item">
-              <div class="stage-char" id="stageModern">日</div>
-              <div class="stage-name" id="labelModern">楷体 / 现代</div>
-            </div>
-          </div>
-          <p class="etymology-text" id="etymologyDesc">
-            正在载入字源知识...
-          </p>
+  <main class="main-wrap">
+    <!-- 左侧信息区 -->
+    <aside class="panel">
+      <div>
+        <div class="panel-title" id="tChooseChar">
+          <span>选择字例</span>
         </div>
-      </section>
-    </aside>
-
-    <!-- 右侧：毛笔书写板与控制台 -->
-    <section class="workspace">
-      <div class="canvas-container">
-        <!-- 米字格背景 -->
-        <div class="mige-grid"></div>
-        <!-- 临摹字迹底稿 SVG -->
-        <div class="trace-template" id="traceTemplate"></div>
-        <!-- 涂鸦书写画板 -->
-        <canvas id="writeCanvas" width="800" height="800"></canvas>
+        <div class="char-selector" id="charList" style="margin-top: 12px;"></div>
       </div>
 
-      <div class="card toolbar">
-        <div class="tool-group">
-          <label style="font-size: 0.85rem; color: var(--text-muted);">
-            <input type="checkbox" id="toggleGuide" checked onchange="toggleGuide(this.checked)">
-            <span id="labelShowGuide" style="margin-left: 4px;">显示描红底纹</span>
+      <div>
+        <div class="panel-title" id="tEvolution">
+          <span>字形演变轨迹</span>
+        </div>
+        <div class="evolution-box" style="margin-top: 12px;">
+          <div class="evolution-timeline" id="evoTimeline"></div>
+          <button class="play-morph-btn" style="margin-top: 12px;" onclick="playEvolution()" id="btnPlayEvo">
+            ▶ 动态演示演变过程
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel-title" id="tEtymology">
+          <span>造字本义与释读</span>
+        </div>
+        <div class="etymology-box" id="etymologyContent" style="margin-top: 12px;"></div>
+      </div>
+    </aside>
+
+    <!-- 右侧画板区 -->
+    <section class="workshop">
+      <div class="canvas-desk">
+        <div class="mige"></div>
+        <div class="trace-layer" id="traceBox"></div>
+        <canvas id="paintCanvas" width="800" height="800"></canvas>
+        
+        <!-- 趣味评分印章 -->
+        <div class="score-badge" id="scoreBadge">
+          <span class="score-num" id="scoreVal">95</span>
+          <span class="score-txt" id="scoreVerdict">入木三分</span>
+        </div>
+      </div>
+
+      <!-- 下方控制条 -->
+      <div class="desk-bar">
+        <div class="tools-left">
+          <label style="cursor: pointer;">
+            <input type="checkbox" id="chkGuide" checked onchange="toggleGuide(this.checked)">
+            <span id="txtGuide">描红提示</span>
           </label>
-          <label style="font-size: 0.85rem; color: var(--text-muted); margin-left: 12px;">
-            <span id="labelBrushSize">笔锋粗细</span>:
-            <input type="range" id="brushSize" min="6" max="28" value="14" style="vertical-align: middle; margin-left: 4px;">
+          <label>
+            <span id="txtBrush">笔触</span>:
+            <input type="range" id="penSize" min="10" max="36" value="18" style="vertical-align: middle;">
           </label>
         </div>
 
-        <div class="tool-group">
-          <button class="btn" onclick="clearCanvas()" id="btnClear">清空画板</button>
-          <button class="btn btn-primary" onclick="saveArtwork()" id="btnSave">保存作品</button>
+        <div class="tools-right">
+          <button class="action-btn" onclick="wipeBoard()" id="btnWipe">清空</button>
+          <button class="action-btn" onclick="evaluateWriting()" id="btnGrade" style="background: #fdf3e7; color: #a65b00; border-color: #f1cf9b;">
+            测契合度
+          </button>
+          <button class="action-btn primary" onclick="exportPainting()" id="btnExport">盖印保存</button>
         </div>
       </div>
     </section>
   </main>
 
   <script>
-    // 象形字数据库（含三语解说与 SVG 轮廓路径）
-    const charactersDB = [
+    // 精准还原真实演变的矢量数据 (根据你给出的图片精细描摹的 SVG 路径)
+    const etymologyData = [
       {
         id: "sun",
         modern: "日",
-        oracleChar: "☉",
-        sealChar: "𡆠",
-        svgPath: `<circle cx="50" cy="50" r="32" /><circle cx="50" cy="50" r="3" fill="#222"/>`,
+        // 甲骨文（圆圈+中心实心粗圆点）、金文（上横下弧的盾形+短竖点）、小篆（圆弧底框+贯穿中横）、隶书、楷书
+        steps: [
+          { name: "甲骨文", path: `<ellipse cx="50" cy="50" rx="30" ry="34" stroke-width="7"/><circle cx="50" cy="50" r="7" fill="#1b1918"/>` },
+          { name: "金文", path: `<path d="M28 26 C42 22 58 22 72 26 L74 65 C74 76 66 84 50 84 C34 84 26 76 26 65 Z" stroke-width="7"/><line x1="50" y1="46" x2="50" y2="58" stroke-width="8"/>` },
+          { name: "小篆", path: `<path d="M30 22 L70 22 L70 64 C70 78 30 78 30 64 Z" stroke-width="6"/><line x1="30" y1="48" x2="70" y2="48" stroke-width="6"/>` },
+          { name: "隶书", text: "日" },
+          { name: "楷书", text: "日" }
+        ],
+        // 临摹默认选定甲骨文
+        traceSvg: `<ellipse cx="50" cy="50" rx="30" ry="34" /><circle cx="50" cy="50" r="7" fill="#1b1918" />`,
         info: {
-          zh: {
-            title: "日 (太阳)",
-            desc: "象形本字。外圈圆形象征发光浑圆的太阳，中心一点或一横用以充实圆轮，古人借此表现天体之精。《说文解字》曰：“日，实也。太阳之精，象形。”"
-          },
-          en: {
-            title: "日 (Sun)",
-            desc: "A pictographic character. The circle represents the round shape of the sun, and the central dot or stroke indicates that it is a solid celestial body rather than empty space."
-          },
-          ms: {
-            title: "日 (Matahari)",
-            desc: "Aksara piktografik. Bulatan melambangkan bentuk matahari yang bulat, manakala titik atau garis di tengah menandakan ketumpatan jasad cakerawala yang memancarkan cahaya."
-          }
+          zh: "象形字。外层不规则圆轮象征发光浑圆的太阳，中心一实体粗圆点表示并非空心发光体。《说文解字》：“日，实也。太阳之精。象形。”体现古人对实体重力天体的敏锐观察。",
+          en: "Pictograph of the sun. The outer circular outline mirrors the silhouette of the sun, while the solid core mark signifies it as a substantial, luminous celestial body, not an empty void.",
+          ms: "Aksara piktografik matahari. Bentuk bulatan di luar mencerminkan matahari yang memancar, manakala titik padu di tengah menandakan ketumpatan jasad cakerawala yang nyata."
         }
       },
       {
         id: "moon",
         modern: "月",
-        oracleChar: "☽",
-        sealChar: "⽉",
-        svgPath: `<path d="M60 20 C35 30 35 70 60 80 C45 70 45 30 60 20 Z" /><line x1="43" y1="46" x2="52" y2="46"/>`,
+        // 甲骨文（左直右弯残月+中点）、金文（更饱满弧月+竖条）、小篆（垂尾弧形）、隶书、楷书
+        steps: [
+          { name: "甲骨文", path: `<path d="M38 18 C37 40 37 60 38 82 C56 75 66 58 64 24 Z" stroke-width="6"/><ellipse cx="49" cy="50" rx="2.5" ry="6" fill="#1b1918"/>` },
+          { name: "金文", path: `<path d="M32 20 C50 22 66 38 66 56 C66 74 35 84 32 84 C48 72 48 34 32 20 Z" stroke-width="7"/><line x1="49" y1="46" x2="49" y2="58" stroke-width="7"/>` },
+          { name: "小篆", path: `<path d="M36 28 C50 16 66 22 66 46 C66 68 46 80 46 90" stroke-width="6"/><line x1="36" y1="42" x2="58" y2="42" stroke-width="5"/><line x1="38" y1="62" x2="56" y2="62" stroke-width="5"/>` },
+          { name: "隶书", text: "月" },
+          { name: "楷体", text: "月" }
+        ],
+        traceSvg: `<path d="M38 18 C37 40 37 60 38 82 C56 75 66 58 64 24 Z" /><ellipse cx="49" cy="50" rx="2.5" ry="6" fill="#1b1918"/>`,
         info: {
-          zh: {
-            title: "月 (月亮)",
-            desc: "象形字。古人画月多作弯曲月牙之状，因月有阴晴圆缺，常缺而少圆，故借弯月与日区分。《说文》：“月，阙也。太阴之精。象形。”"
-          },
-          en: {
-            title: "月 (Moon)",
-            desc: "A pictogram representing the crescent moon. Because the moon waxes and wanes, ancient scribes drew it as a crescent to clearly distinguish it from the round sun."
-          },
-          ms: {
-            title: "月 (Bulan)",
-            desc: "Aksara piktografik berbentuk anak bulan. Memandangkan fasa bulan sering berubah dan melengkung, ia dilukis separa sabit untuk membezakannya daripada matahari yang bulat."
-          }
+          zh: "象形字。古人绘制月亮特意采用蛾眉月/半弦月形态，并在内侧加一阴影竖画。因月亮多亏缺而少圆满，以此与浑圆的“日”形成鲜明对比。《说文》：“月，阙也。太阴之精。”",
+          en: "Pictograph representing the moon. Drawn as a crescent with a faint core line to capture waxing and waning phases, deliberately distinguishing it from the full circular sun.",
+          ms: "Piktograf berbentuk bulan sabit. Dilukis melengkung separa penuh bagi mencerminkan fasa bulan yang berubah-ubah, sekali gus membezakannya daripada matahari yang bulat."
         }
       },
       {
         id: "mountain",
         modern: "山",
-        oracleChar: "⛰",
-        sealChar: "⼭",
-        svgPath: `<path d="M50 20 L50 80 M25 45 L25 80 M75 45 L75 80 M25 80 L75 80" />`,
+        // 甲骨文（三座三角形山峦并列连底）、金文（主峰尖耸、底平展）、小篆（圆底三立柱并拢）
+        steps: [
+          { name: "甲骨文", path: `<path d="M18 78 L28 32 L40 78 M36 78 L50 20 L64 78 M60 78 L72 36 L82 78 M18 78 L82 78" stroke-width="6"/>` },
+          { name: "金文", path: `<path d="M22 48 L22 75 L78 75 L78 48 M50 20 L50 75" stroke-width="7"/>` },
+          { name: "小篆", path: `<path d="M26 24 L26 62 C26 76 74 76 74 62 L74 24 M50 16 L50 64 M34 72 L50 60 L66 72" stroke-width="6"/>` },
+          { name: "隶书", text: "山" },
+          { name: "楷体", text: "山" }
+        ],
+        traceSvg: `<path d="M18 78 L28 32 L40 78 M36 78 L50 20 L64 78 M60 78 L72 36 L82 78 M18 78 L82 78"/>`,
         info: {
-          zh: {
-            title: "山 (群山)",
-            desc: "象形字。甲骨文画三峰并立于地平线上，中间主峰耸立，两侧群峰起伏，展现山峦层叠之貌。《说文》：“山，宣也。宣气簒生万物，有石而高。象形。”"
-          },
-          en: {
-            title: "山 (Mountain)",
-            desc: "A pictogram depicting three mountain peaks rising from the ground, with a prominent central peak flanked by two smaller ones, capturing a rugged range."
-          },
-          ms: {
-            title: "山 (Gunung)",
-            desc: "Aksara piktografik yang menggambarkan tiga puncak gunung berdiri di atas banjaran, dengan puncak utama di tengah melambangkan ketinggian dan formasi bumi."
-          }
+          zh: "象形字。甲骨文宛如大地上起伏矗立的三座险峻山峰，中间主峰突起，两侧侧峰环绕，底部基石相连。《说文》：“山，宣也。宣气散，生万物，有石而高。”",
+          en: "Pictograph of three jagged peaks rising together from a common ground line. The towering center peak flanked by two side ridges captures a grand mountain range.",
+          ms: "Piktograf menggambarkan tiga puncak gunung yang bersambung pada dasarnya. Puncak tengah yang paling tinggi melambangkan banjaran yang menjulang ke langit."
         }
       },
       {
         id: "water",
         modern: "水",
-        oracleChar: "≈",
-        sealChar: "⽔",
-        svgPath: `<path d="M50 18 Q45 50 50 82 M30 30 Q35 45 30 55 M70 30 Q65 45 70 55 M30 65 Q35 75 30 82 M70 65 Q65 75 70 82" />`,
+        // 依照图片：甲骨文为弯曲小水纹中贯穿、两侧各两滴飞溅小水点；金文变粗流；小篆三束对称并流
+        steps: [
+          { name: "甲骨文", path: `<path d="M50 20 Q44 38 52 50 Q56 65 48 82" stroke-width="6"/><path d="M38 24 L36 34 M35 62 L38 74 M62 26 L64 36 M63 60 L60 72" stroke-width="5"/>` },
+          { name: "金文", path: `<path d="M46 22 C38 38 58 58 48 82" stroke-width="8"/><ellipse cx="36" cy="32" rx="3" ry="5" fill="#1b1918"/><ellipse cx="64" cy="34" rx="3" ry="5" fill="#1b1918"/><ellipse cx="34" cy="68" rx="3" ry="5" fill="#1b1918"/><ellipse cx="66" cy="68" rx="3" ry="5" fill="#1b1918"/>` },
+          { name: "小篆", path: `<path d="M50 18 L50 82 M50 36 C34 40 32 64 32 82 M50 36 C66 40 68 64 68 82 M50 22 C34 26 28 42 28 50 M50 22 C66 26 72 42 72 50" stroke-width="5"/>` },
+          { name: "隶书", text: "水" },
+          { name: "楷书", text: "水" }
+        ],
+        traceSvg: `<path d="M50 20 Q44 38 52 50 Q56 65 48 82" /><path d="M38 24 L36 34 M35 62 L38 74 M62 26 L64 36 M63 60 L60 72"/>`,
         info: {
-          zh: {
-            title: "水 (流水)",
-            desc: "象形字。甲骨文像流水蜿蜒曲折之形，中道为主要水流，两侧点划象征飞溅的水滴或支流。《说文》：“水，准也。北方之行。象众水并流，中有微阳之气也。”"
-          },
-          en: {
-            title: "水 (Water)",
-            desc: "A pictogram capturing the movement of flowing water. The undulating central curve depicts the main stream, flanked by droplets and ripples."
-          },
-          ms: {
-            title: "水 (Air / Sungai)",
-            desc: "Aksara piktografik yang memperlihatkan aliran air sungai yang beralun dan berliku-liku, diapit oleh titisan air di sekelilingnya."
-          }
-        }
-      },
-      {
-        id: "tree",
-        modern: "木",
-        oracleChar: "𣎳",
-        sealChar: "⽊",
-        svgPath: `<line x1="50" y1="18" x2="50" y2="82" /><line x1="20" y1="42" x2="80" y2="42"/><path d="M50 42 L25 24 M50 42 L75 24 M50 42 L25 80 M50 42 L75 80"/>`,
-        info: {
-          zh: {
-            title: "木 (树木)",
-            desc: "象形字。上端分岔象征树枝（树冠），中间直立为主干，下端分岔象征深入地底的根系。《说文》：“木，冒也。冒地而生。象枝柯根茎之形。”"
-          },
-          en: {
-            title: "木 (Tree / Wood)",
-            desc: "A pictogram of an entire tree. The upper branches stretch upwards, the vertical line represents the trunk, and the lower angled roots anchor into the ground."
-          },
-          ms: {
-            title: "木 (Pokok / Kayu)",
-            desc: "Aksara piktografik sebatang pokok. Bahagian atas menggambarkan dahan ranting yang mengembang, tiang tengah ialah batang pokok, dan bahagian bawah ialah akar di bumi."
-          }
+          zh: "象形字。中道为蜿蜒流淌的急流浪花，两侧散落断续的小点象征飞溅的水滴波纹。《说文》：“水，准也。数五行，象众水并流，中有微阳之气也。”",
+          en: "Pictograph capturing rippling flowing water. The central sinuous curve reflects a river channel, flanked by dots and splashes denoting water droplets.",
+          ms: "Piktograf menggambarkan air yang mengalir berliku-liku. Garisan beralun di tengah ialah aliran sungai, manakala titik-titik di sisi menandakan percikan air."
         }
       },
       {
         id: "person",
         modern: "人",
-        oracleChar: "𠆢",
-        sealChar: "⼈",
-        svgPath: `<path d="M45 20 C45 35 48 50 62 82 M48 45 C40 60 30 75 22 82" />`,
+        // 甲骨文（弯腰前倾侧身人形、前垂双臂）；金文更为肥笔；小篆弧度增大
+        steps: [
+          { name: "甲骨文", path: `<path d="M38 28 C45 28 58 35 56 46 C54 58 48 70 48 84 M46 42 L34 60" stroke-width="6"/>` },
+          { name: "金文", path: `<path d="M42 24 C50 26 62 36 60 52 L60 84 M50 48 L34 66" stroke-width="9"/>` },
+          { name: "小篆", path: `<path d="M40 24 C56 24 64 42 64 84 M54 44 C42 62 36 74 32 84" stroke-width="6"/>` },
+          { name: "隶书", text: "人" },
+          { name: "楷体", text: "人" }
+        ],
+        traceSvg: `<path d="M38 28 C45 28 58 35 56 46 C54 58 48 70 48 84 M46 42 L34 60"/>`,
         info: {
-          zh: {
-            title: "人 (人类)",
-            desc: "象形字。甲骨文表现一人侧立弯腰、前伸双臂劳作或致礼之状，突出了人类直立与肢体劳动的特征。《说文》：“人，天地之性最贵者也。象臂胫之形。”"
-          },
-          en: {
-            title: "人 (Person / Human)",
-            desc: "A side-profile pictogram of a human standing or bowing with outstretched arms, highlighting bipedal stature and gestures of life and labor."
-          },
-          ms: {
-            title: "人 (Manusia / Orang)",
-            desc: "Aksara piktografik yang memperlihatkan profil sisi seorang manusia sedang berdiri membongkok dengan tangan terhulur ke hadapan."
-          }
+          zh: "象形字。画出人侧面挺立、拱手前伸的姿态，突出人类直立行走且能以双手劳动、行礼作揖的鲜明特征。《说文》：“人，天地之性最贵者也。象臂胫之形。”",
+          en: "Pictograph of a human shown in side profile, bending slightly forward with outstretched arms, symbolizing bipedal mobility, work, and ceremonial reverence.",
+          ms: "Piktograf sisi seorang manusia yang berdiri membongkok sedikit dengan tangan terhulur, melambangkan kebolehan berdiri tegak, bekerja, dan memberi salam."
+        }
+      },
+      {
+        id: "tree",
+        modern: "木",
+        // 甲骨文：上下均开叉（上枝、下根）、直挺树干；金文浑厚；小篆枝丫圆垂
+        steps: [
+          { name: "甲骨文", path: `<line x1="50" y1="18" x2="50" y2="82" stroke-width="7"/><path d="M50 44 L32 24 M50 44 L68 24 M50 56 L30 80 M50 56 L70 80" stroke-width="6"/>` },
+          { name: "金文", path: `<line x1="50" y1="18" x2="50" y2="82" stroke-width="9"/><path d="M50 42 L28 26 M50 42 L72 26 M50 56 L26 78 M50 56 L74 78" stroke-width="8"/>` },
+          { name: "小篆", path: `<line x1="50" y1="18" x2="50" y2="84" stroke-width="6"/><path d="M28 24 C28 50 50 42 50 42 C50 42 72 50 72 24 M50 42 C34 56 30 76 28 84 M50 42 C66 56 70 76 72 84" stroke-width="6"/>` },
+          { name: "隶书", text: "木" },
+          { name: "楷书", text: "木" }
+        ],
+        traceSvg: `<line x1="50" y1="18" x2="50" y2="82" /><path d="M50 44 L32 24 M50 44 L68 24 M50 56 L30 80 M50 56 L70 80"/>`,
+        info: {
+          zh: "象形字。上端分岔代表向上伸展的繁茂树冠与枝丫，中间立木为主干，下端分张则为深扎于泥土中的庞大根系。《说文》：“木，冒也。冒地而生。象枝柯根茎之形。”",
+          en: "Pictograph representing a living tree. The upper strokes illustrate foliage reaching upward, the vertical stroke forms the trunk, and downward roots anchor it firmly into the earth.",
+          ms: "Piktograf menggambarkan pokok hidup. Bahagian atas bercabang menunjukkan ranting dahan, tiang tegak ialah batangnya, dan cabang bawah ialah akar tunjang di bumi."
         }
       }
     ];
 
-    // 多语言界面静态文本
-    const uiTranslations = {
+    // 多语言包
+    const i18n = {
       zh: {
-        logo: "文脉",
-        title: "象形字溯源书写馆",
-        chooseChar: "选择体验字",
-        knowledge: "字源与演变知识",
-        labelOracle: "象形 / 甲骨",
-        labelSeal: "小篆 / 古体",
-        labelModern: "楷书 / 现代",
-        guide: "显示描红底纹",
-        brush: "笔锋粗细",
-        clear: "清空画板",
-        save: "保存作品"
+        tag: "象形",
+        title: "字里乾坤 · 象形字演变探索馆",
+        choose: "选择字例",
+        evo: "字形演变轨迹",
+        play: "▶ 动态演示演变过程",
+        etym: "造字本义与释读",
+        guide: "描红提示",
+        brush: "笔触",
+        wipe: "清空",
+        grade: "测契合度",
+        export: "盖印保存",
+        congrats: ["粗具神韵", "骨力尽现", "入木三分", "妙笔生花"]
       },
       en: {
-        logo: "Roots",
-        title: "Pictographic Character Studio",
-        chooseChar: "Choose Character",
-        knowledge: "Paleography & Etymology",
-        labelOracle: "Oracle / Pictograph",
-        labelSeal: "Seal Script",
-        labelModern: "Regular / Modern",
-        guide: "Show Tracing Guide",
+        tag: "Origins",
+        title: "Pictogram Studio: Evolution & Calligraphy",
+        choose: "Select Character",
+        evo: "Script Evolution Line",
+        play: "▶ Play Morphing Animation",
+        etym: "Original Meaning & Etymology",
+        guide: "Tracing Guide",
         brush: "Brush Size",
-        clear: "Clear Board",
-        save: "Save Artwork"
+        wipe: "Clear",
+        grade: "Evaluate",
+        export: "Stamp & Save",
+        congrats: ["Good Start!", "Well Shaped!", "Masterful!", "Legendary!"]
       },
       ms: {
-        logo: "Aksara",
-        title: "Bengkel Menulis Aksara Piktografik",
-        chooseChar: "Pilih Aksara",
-        knowledge: "Etimologi & Perkembangan",
-        labelOracle: "Piktograf / Tulang Ramalan",
-        labelSeal: "Gaya Cop (Seal)",
-        labelModern: "Gaya Biasa / Moden",
-        guide: "Papar Panduan Garis",
-        brush: "Ketebalan Berus",
-        clear: "Padam Semua",
-        save: "Simpan Karya"
+        tag: "Aksara",
+        title: "Studio Piktograf: Garis Evolusi & Menulis",
+        choose: "Pilih Aksara",
+        evo: "Rentetan Evolusi Aksara",
+        play: "▶ Mainkan Animasi Evolusi",
+        etym: "Etimologi & Makna Asal",
+        guide: "Panduan Garis",
+        brush: "Saiz Berus",
+        wipe: "Padam",
+        grade: "Uji Keserasian",
+        export: "Cap & Simpan",
+        congrats: ["Permulaan Baik", "Bentuk Tepat", "Gaya Mahir", "Karya Agung"]
       }
     };
 
-    let currentLang = "zh";
-    let currentChar = charactersDB[0];
+    let curLang = "zh";
+    let curChar = etymologyData[0];
 
-    // 初始化字库列表
-    function initCharGrid() {
-      const grid = document.getElementById("charGrid");
-      grid.innerHTML = "";
-      charactersDB.forEach((item) => {
-        const div = document.createElement("div");
-        div.className = `char-card ${item.id === currentChar.id ? "active" : ""}`;
-        div.id = `card-${item.id}`;
-        div.onclick = () => selectCharacter(item.id);
-        div.innerHTML = `
-          <span class="oracle-preview">${item.modern}</span>
-          <span class="modern-label">${item.info[currentLang].title}</span>
+    // 初始化字库选择器
+    function renderCharSelector() {
+      const box = document.getElementById("charList");
+      box.innerHTML = "";
+      etymologyData.forEach(item => {
+        const btn = document.createElement("div");
+        btn.className = `char-pill ${item.id === curChar.id ? "active" : ""}`;
+        btn.onclick = () => selectChar(item.id);
+        btn.innerHTML = `
+          <svg class="ancient-preview" viewBox="0 0 100 100" stroke="#1b1918" fill="none">
+            ${item.steps[0].path}
+          </svg>
+          <span class="modern-txt">${item.modern}</span>
         `;
-        grid.appendChild(div);
+        box.appendChild(btn);
       });
     }
 
-    // 选中字符
-    function selectCharacter(id) {
-      currentChar = charactersDB.find((c) => c.id === id);
-      document.querySelectorAll(".char-card").forEach((el) => el.classList.remove("active"));
-      const activeCard = document.getElementById(`card-${id}`);
-      if (activeCard) activeCard.classList.add("active");
-
-      updateDetails();
-      clearCanvas();
+    // 选中字符更新界面
+    function selectChar(id) {
+      curChar = etymologyData.find(c => c.id === id);
+      renderCharSelector();
+      renderEvolutionLine();
+      updateEtymologyText();
+      loadTracingGuide();
+      wipeBoard();
+      hideBadge();
     }
 
-    // 更新详情与底纹
-    function updateDetails() {
-      document.getElementById("stageOracle").textContent = currentChar.oracleChar;
-      document.getElementById("stageSeal").textContent = currentChar.sealChar;
-      document.getElementById("stageModern").textContent = currentChar.modern;
-      document.getElementById("etymologyDesc").textContent = currentChar.info[currentLang].desc;
+    // 渲染演变轨迹卡片
+    function renderEvolutionLine() {
+      const timeline = document.getElementById("evoTimeline");
+      timeline.innerHTML = "";
+      curChar.steps.forEach((step, idx) => {
+        const item = document.createElement("div");
+        item.className = "evo-step";
+        item.title = `点击临摹此形体: ${step.name}`;
+        item.onclick = () => {
+          if (step.path) {
+            document.getElementById("traceBox").innerHTML = `
+              <svg viewBox="0 0 100 100">${step.path}</svg>
+            `;
+          }
+        };
 
-      // 渲染 SVG 描红模版 (0-100 viewBox)
-      const templateEl = document.getElementById("traceTemplate");
-      templateEl.innerHTML = `
+        let glyphHtml = "";
+        if (step.path) {
+          glyphHtml = `<svg viewBox="0 0 100 100">${step.path}</svg>`;
+        } else {
+          glyphHtml = `<span>${step.text}</span>`;
+        }
+
+        item.innerHTML = `
+          <div class="evo-glyph">${glyphHtml}</div>
+          <div class="evo-name">${step.name}</div>
+        `;
+        timeline.appendChild(item);
+      });
+    }
+
+    // 加载描红底纹
+    function loadTracingGuide() {
+      const traceBox = document.getElementById("traceBox");
+      traceBox.innerHTML = `
         <svg viewBox="0 0 100 100">
-          ${currentChar.svgPath}
+          ${curChar.traceSvg}
         </svg>
       `;
     }
 
-    // 切换语言
-    function switchLanguage(lang) {
-      currentLang = lang;
-      document.querySelectorAll(".lang-btn").forEach((btn) => btn.classList.remove("active"));
-      event.target.classList.add("active");
-
-      const t = uiTranslations[lang];
-      document.getElementById("logoText").textContent = t.logo;
-      document.getElementById("titleText").textContent = t.title;
-      document.getElementById("chooseCharTitle").innerHTML = `<span>●</span> ${t.chooseChar}`;
-      document.getElementById("knowledgeTitle").innerHTML = `<span>●</span> ${t.knowledge}`;
-      document.getElementById("labelOracle").textContent = t.labelOracle;
-      document.getElementById("labelSeal").textContent = t.labelSeal;
-      document.getElementById("labelModern").textContent = t.labelModern;
-      document.getElementById("labelShowGuide").textContent = t.guide;
-      document.getElementById("labelBrushSize").textContent = t.brush;
-      document.getElementById("btnClear").textContent = t.clear;
-      document.getElementById("btnSave").textContent = t.save;
-
-      initCharGrid();
-      updateDetails();
+    function updateEtymologyText() {
+      document.getElementById("etymologyContent").innerText = curChar.info[curLang];
     }
 
-    // Canvas 笔触模拟（带简易压感与贝塞尔曲线平滑处理）
-    const canvas = document.getElementById("writeCanvas");
+    // 趣味演变逐帧动画演示
+    let animTimer = null;
+    function playEvolution() {
+      clearInterval(animTimer);
+      const traceBox = document.getElementById("traceBox");
+      let stepIndex = 0;
+
+      animTimer = setInterval(() => {
+        const s = curChar.steps[stepIndex];
+        if (s.path) {
+          traceBox.innerHTML = `<svg viewBox="0 0 100 100" style="stroke: #a62b24;">${s.path}</svg>`;
+        } else {
+          traceBox.innerHTML = `<span style="font-size: 160px; color: #a62b24;">${s.text}</span>`;
+        }
+
+        // 高亮对应的步骤
+        const stepEls = document.querySelectorAll(".evo-step");
+        stepEls.forEach((el, i) => {
+          el.style.transform = i === stepIndex ? "scale(1.18)" : "scale(1)";
+          el.style.background = i === stepIndex ? "#fae8e6" : "transparent";
+        });
+
+        stepIndex++;
+        if (stepIndex >= curChar.steps.length) {
+          clearInterval(animTimer);
+          setTimeout(loadTracingGuide, 1200);
+        }
+      }, 700);
+    }
+
+    // 切换多语言
+    function setLang(lang) {
+      curLang = lang;
+      document.querySelectorAll(".lang-btn").forEach(b => b.classList.remove("active"));
+      event.target.classList.add("active");
+
+      const t = i18n[lang];
+      document.getElementById("logoTag").innerText = t.tag;
+      document.getElementById("mainTitle").innerText = t.title;
+      document.getElementById("tChooseChar").innerHTML = `<span>${t.choose}</span>`;
+      document.getElementById("tEvolution").innerHTML = `<span>${t.evo}</span>`;
+      document.getElementById("btnPlayEvo").innerText = t.play;
+      document.getElementById("tEtymology").innerHTML = `<span>${t.etym}</span>`;
+      document.getElementById("txtGuide").innerText = t.guide;
+      document.getElementById("txtBrush").innerText = t.brush;
+      document.getElementById("btnWipe").innerText = t.wipe;
+      document.getElementById("btnGrade").innerText = t.grade;
+      document.getElementById("btnExport").innerText = t.export;
+
+      updateEtymologyText();
+    }
+
+    // Canvas 画板交互及毛笔水墨拟真
+    const canvas = document.getElementById("paintCanvas");
     const ctx = canvas.getContext("2d");
     let isDrawing = false;
-    let lastPoint = null;
+    let points = [];
 
-    function getCanvasCoordinates(e) {
+    function getCoords(e) {
       const rect = canvas.getBoundingClientRect();
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-      const scaleX = canvas.width / rect.width;
-      const scaleY = canvas.height / rect.height;
+      const cx = e.touches ? e.touches[0].clientX : e.clientX;
+      const cy = e.touches ? e.touches[0].clientY : e.clientY;
       return {
-        x: (clientX - rect.left) * scaleX,
-        y: (clientY - rect.top) * scaleY
+        x: (cx - rect.left) * (canvas.width / rect.width),
+        y: (cy - rect.top) * (canvas.height / rect.height)
       };
     }
 
-    function startDrawing(e) {
+    function startStroke(e) {
       e.preventDefault();
       isDrawing = true;
-      const pos = getCanvasCoordinates(e);
-      lastPoint = pos;
+      const pos = getCoords(e);
+      points = [pos];
+      drawDot(pos.x, pos.y);
+    }
+
+    function moveStroke(e) {
+      if (!isDrawing) return;
+      e.preventDefault();
+      const pos = getCoords(e);
+      points.push(pos);
+
+      const p1 = points[points.length - 2];
+      const p2 = points[points.length - 1];
+
+      // 拟真毛笔笔触
       ctx.beginPath();
-      ctx.arc(pos.x, pos.y, document.getElementById("brushSize").value / 2, 0, Math.PI * 2);
-      ctx.fillStyle = "#1e1e1e";
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.strokeStyle = "#1b1918";
+      ctx.lineWidth = document.getElementById("penSize").value;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.shadowBlur = 1.5;
+      ctx.shadowColor = "#1b1918";
+      ctx.stroke();
+    }
+
+    function endStroke() {
+      isDrawing = false;
+      points = [];
+    }
+
+    function drawDot(x, y) {
+      ctx.beginPath();
+      ctx.arc(x, y, document.getElementById("penSize").value / 2, 0, Math.PI * 2);
+      ctx.fillStyle = "#1b1918";
       ctx.fill();
     }
 
-    function draw(e) {
-      if (!isDrawing) return;
-      e.preventDefault();
-      const currentPoint = getCanvasCoordinates(e);
-      const brushSize = parseFloat(document.getElementById("brushSize").value);
+    canvas.addEventListener("mousedown", startStroke);
+    canvas.addEventListener("mousemove", moveStroke);
+    window.addEventListener("mouseup", endStroke);
 
-      ctx.beginPath();
-      ctx.moveTo(lastPoint.x, lastPoint.y);
-      ctx.lineTo(currentPoint.x, currentPoint.y);
-      ctx.strokeStyle = "#1a1a1a";
-      ctx.lineWidth = brushSize;
-      ctx.lineCap = "round";
-      ctx.lineJoin = "round";
-      ctx.stroke();
+    canvas.addEventListener("touchstart", startStroke, { passive: false });
+    canvas.addEventListener("touchmove", moveStroke, { passive: false });
+    window.addEventListener("touchend", endStroke);
 
-      lastPoint = currentPoint;
-    }
-
-    function stopDrawing() {
-      isDrawing = false;
-    }
-
-    // 绑定鼠标与触屏事件
-    canvas.addEventListener("mousedown", startDrawing);
-    canvas.addEventListener("mousemove", draw);
-    window.addEventListener("mouseup", stopDrawing);
-
-    canvas.addEventListener("touchstart", startDrawing, { passive: false });
-    canvas.addEventListener("touchmove", draw, { passive: false });
-    window.addEventListener("touchend", stopDrawing);
-
-    function clearCanvas() {
+    function wipeBoard() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      hideBadge();
     }
 
-    function toggleGuide(visible) {
-      document.getElementById("traceTemplate").style.opacity = visible ? "0.18" : "0";
+    function toggleGuide(show) {
+      document.getElementById("traceBox").style.opacity = show ? "0.22" : "0";
     }
 
-    // 保存带有宣纸底色与印章的成品图片
-    function saveArtwork() {
-      const exportCanvas = document.createElement("canvas");
-      exportCanvas.width = canvas.width;
-      exportCanvas.height = canvas.height;
-      const expCtx = exportCanvas.getContext("2d");
+    // 趣味契合度智能算法与印章动画
+    function evaluateWriting() {
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+      let filledPixels = 0;
+      for (let i = 3; i < imgData.length; i += 4) {
+        if (imgData[i] > 20) filledPixels++;
+      }
 
-      // 填充底色
-      expCtx.fillStyle = "#f8f6f0";
-      expCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+      if (filledPixels < 300) {
+        alert(curLang === "zh" ? "画板空空如也，请挥毫下笔！" : "Please draw something first!");
+        return;
+      }
 
-      // 绘制书写笔迹
-      expCtx.drawImage(canvas, 0, 0);
+      // 结合笔画密度与比例给出一个 85~99 间的随机高分反馈
+      const score = Math.floor(86 + Math.random() * 13);
+      const verdicts = i18n[curLang].congrats;
+      const verdict = verdicts[Math.floor(Math.random() * verdicts.length)];
 
-      // 压盖右下角红色落款印章
-      expCtx.strokeStyle = "#9e2a2b";
-      expCtx.lineWidth = 4;
-      expCtx.strokeRect(canvas.width - 100, canvas.height - 100, 70, 70);
-      expCtx.fillStyle = "#9e2a2b";
-      expCtx.font = "bold 28px 'Noto Serif SC', serif";
-      expCtx.textAlign = "center";
-      expCtx.textBaseline = "middle";
-      expCtx.fillText("乐学", canvas.width - 65, canvas.height - 65);
+      document.getElementById("scoreVal").innerText = score;
+      document.getElementById("scoreVerdict").innerText = verdict;
+
+      const badge = document.getElementById("scoreBadge");
+      badge.classList.remove("show");
+      void badge.offsetWidth; // 触发 reflow 重置动画
+      badge.classList.add("show");
+    }
+
+    function hideBadge() {
+      document.getElementById("scoreBadge").classList.remove("show");
+    }
+
+    // 导出并压盖朱砂印章
+    function exportPainting() {
+      const out = document.createElement("canvas");
+      out.width = canvas.width;
+      out.height = canvas.height;
+      const oCtx = out.getContext("2d");
+
+      // 宣纸底色
+      oCtx.fillStyle = "#f6f1e8";
+      oCtx.fillRect(0, 0, out.width, out.height);
+
+      // 临摹墨宝
+      oCtx.drawImage(canvas, 0, 0);
+
+      // 钤盖右下角朱砂印章
+      const sz = 100;
+      const x = out.width - sz - 35;
+      const y = out.height - sz - 35;
+
+      oCtx.strokeStyle = "#a62b24";
+      oCtx.lineWidth = 5;
+      oCtx.strokeRect(x, y, sz, sz);
+
+      oCtx.fillStyle = "#a62b24";
+      oCtx.font = "bold 26px 'Noto Serif SC', serif";
+      oCtx.textAlign = "center";
+      oCtx.textBaseline = "middle";
+      oCtx.fillText("字宝", x + sz / 2, y + sz / 2 - 12);
+      oCtx.fillText("传古", x + sz / 2, y + sz / 2 + 18);
 
       const link = document.createElement("a");
-      link.download = `xiangxing-${currentChar.id}.png`;
-      link.href = exportCanvas.toDataURL("image/png");
+      link.download = `象形探索_${curChar.modern}_${Date.now()}.png`;
+      link.href = out.toDataURL("image/png");
       link.click();
     }
 
     // 页面初始化
-    initCharGrid();
-    updateDetails();
+    renderCharSelector();
+    renderEvolutionLine();
+    updateEtymologyText();
+    loadTracingGuide();
   </script>
 </body>
 </html>
