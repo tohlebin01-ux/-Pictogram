@@ -175,6 +175,17 @@
       font-weight: bold;
       margin-top: 3px;
       color: #666;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1.1;
+    }
+
+    .char-pill .trans-sub {
+      font-size: 9px;
+      font-weight: normal;
+      color: #888;
+      transform: scale(0.9);
     }
 
     .char-pill.active, .char-pill:hover {
@@ -185,6 +196,10 @@
     }
 
     .char-pill.active .modern-txt {
+      color: var(--cinnabar);
+    }
+
+    .char-pill.active .trans-sub {
       color: var(--cinnabar);
     }
 
@@ -458,6 +473,7 @@
   <header>
     <div class="header-inner">
       <div class="brand">
+        <!-- 印章与标题在各语言下互补，不重复 -->
         <div class="seal-box" id="logoTag">象形</div>
         <h1 id="mainTitle">字里乾坤</h1>
       </div>
@@ -544,124 +560,119 @@
   </main>
 
   <script>
-    // 依图片严谨还原：全部字形（含隶书与楷书）均使用 SVG 矢量绘制，彻底解决手机系统字体回退导致的“隶书楷书无差别”问题
+    // 带有明确多语言含义说明的字库数据
     const etymologyData = [
       {
         id: "sun",
         modern: "日",
+        meanings: { zh: "太阳", en: "Sun", ms: "Matahari" },
         steps: [
           { name: { zh: "甲骨文", en: "Oracle", ms: "Tulang" }, path: `<ellipse cx="50" cy="50" rx="30" ry="34" stroke-width="7" stroke="#1b1918" fill="none"/><circle cx="50" cy="50" r="7" fill="#1b1918"/>` },
           { name: { zh: "金文", en: "Bronze", ms: "Gangsa" }, path: `<path d="M28 26 C42 22 58 22 72 26 L74 65 C74 76 66 84 50 84 C34 84 26 76 26 65 Z" stroke-width="7" stroke="#1b1918" fill="none"/><line x1="50" y1="46" x2="50" y2="58" stroke-width="8" stroke="#1b1918"/>` },
           { name: { zh: "小篆", en: "Seal", ms: "Cop" }, path: `<path d="M30 22 L70 22 L70 64 C70 78 30 78 30 64 Z" stroke-width="6" stroke="#1b1918" fill="none"/><line x1="30" y1="48" x2="70" y2="48" stroke-width="6" stroke="#1b1918"/>` },
-          // 隶书：扁平、四角略外撇出脚、蚕头燕尾
           { name: { zh: "隶书", en: "Clerical", ms: "Kani" }, path: `<path d="M22 28 L24 74 M22 30 L78 30 L76 74 M24 72 L78 72 M25 50 L75 50" stroke-width="8" stroke="#1b1918" fill="none" stroke-linecap="square"/><line x1="20" y1="28" x2="20" y2="76" stroke-width="3" stroke="#1b1918"/><line x1="78" y1="28" x2="78" y2="76" stroke-width="3" stroke="#1b1918"/>` },
-          // 楷书：瘦长秀正、横细竖粗、右下出小勾
           { name: { zh: "楷书", en: "Regular", ms: "Biasa" }, path: `<path d="M28 20 L28 80 M28 22 L72 22 L72 80 L66 75 M28 48 L70 48 M28 78 L72 78" stroke-width="6" stroke="#1b1918" fill="none"/>` }
         ],
         traceSvg: `<ellipse cx="50" cy="50" rx="30" ry="34" stroke-width="7" stroke="#1b1918" fill="none"/><circle cx="50" cy="50" r="7" fill="#1b1918"/>`,
         info: {
           zh: "象形字。外层不规则圆轮象征发光浑圆的太阳，中心一实体粗圆点表示并非空心发光体。《说文解字》：“日，实也。太阳之精。象形。”体现古人对实体重力天体的敏锐观察。",
-          en: "Pictograph of the sun. The outer circular outline mirrors the silhouette of the sun, while the solid core mark signifies it as a substantial luminous celestial body.",
-          ms: "Aksara piktografik matahari. Bentuk bulatan di luar mencerminkan matahari yang memancar, manakala titik padu di tengah menandakan ketumpatan jasad cakerawala yang nyata."
+          en: "Pictograph representing the Sun. The circular ring mirrors the silhouette of the sun, while the solid center mark denotes that it is a dense, radiant celestial body rather than an empty ring.",
+          ms: "Aksara piktografik melambangkan Matahari. Lingkaran luar menggambarkan bentuk matahari, manakala titik padu di tengah menandakan ketumpatan jasad cakerawala yang bersinar."
         }
       },
       {
         id: "moon",
         modern: "月",
+        meanings: { zh: "月亮", en: "Moon", ms: "Bulan" },
         steps: [
           { name: { zh: "甲骨文", en: "Oracle", ms: "Tulang" }, path: `<path d="M38 18 C37 40 37 60 38 82 C56 75 66 58 64 24 Z" stroke-width="6" stroke="#1b1918" fill="none"/><ellipse cx="49" cy="50" rx="2.5" ry="6" fill="#1b1918"/>` },
           { name: { zh: "金文", en: "Bronze", ms: "Gangsa" }, path: `<path d="M32 20 C50 22 66 38 66 56 C66 74 35 84 32 84 C48 72 48 34 32 20 Z" stroke-width="7" stroke="#1b1918" fill="none"/><line x1="49" y1="46" x2="49" y2="58" stroke-width="7" stroke="#1b1918"/>` },
           { name: { zh: "小篆", en: "Seal", ms: "Cop" }, path: `<path d="M36 28 C50 16 66 22 66 46 C66 68 46 80 46 90" stroke-width="6" stroke="#1b1918" fill="none"/><line x1="36" y1="42" x2="58" y2="42" stroke-width="5" stroke="#1b1918"/><line x1="38" y1="62" x2="56" y2="62" stroke-width="5" stroke="#1b1918"/>` },
-          // 隶书月：横向开张、撇捺短平
           { name: { zh: "隶书", en: "Clerical", ms: "Kani" }, path: `<path d="M34 22 C32 46 26 66 18 80 M34 25 L74 25 L74 78 C74 81 70 82 64 82 M34 44 L70 44 M32 62 L70 62" stroke-width="7" stroke="#1b1918" fill="none"/>` },
-          // 楷书月：长撇挺拔、横折钩方整
           { name: { zh: "楷书", en: "Regular", ms: "Biasa" }, path: `<path d="M36 18 C35 48 30 72 16 86 M36 22 L72 22 L72 82 L65 74 M36 44 L70 44 M35 62 L70 62" stroke-width="6" stroke="#1b1918" fill="none"/>` }
         ],
         traceSvg: `<path d="M38 18 C37 40 37 60 38 82 C56 75 66 58 64 24 Z" stroke-width="6" stroke="#1b1918" fill="none"/><ellipse cx="49" cy="50" rx="2.5" ry="6" fill="#1b1918"/>`,
         info: {
-          zh: "象形字。古人绘制月亮特意采用蛾眉月/半弦月形态，并在内侧加一阴影竖画。因月亮多亏缺而少圆满，以此与浑圆的“日”形成鲜明对比。《说文》：“月，阙也。太阴之精。”",
-          en: "Pictograph representing the moon. Drawn as a crescent with a core mark to capture waxing and waning phases, deliberately distinguishing it from the full circular sun.",
-          ms: "Piktograf berbentuk bulan sabit. Dilukis melengkung separa penuh bagi mencerminkan fasa bulan yang berubah-ubah, sekali gus membezakannya daripada matahari yang bulat."
+          zh: "象形字。古人绘制月亮特意采用半弦月/娥眉月形态，并在内侧加一阴影竖画。因月亮多亏缺而少圆满，以此与浑圆的“日”形成鲜明对比。《说文》：“月，阙也。太阴之精。”",
+          en: "Pictograph representing the Moon. Drawn as a waxing/waning crescent with a faint core line, intentionally distinguishing its changing phases from the permanently full circular sun.",
+          ms: "Aksara piktografik melambangkan Bulan. Dilukis dalam bentuk bulan sabit melengkung untuk mencerminkan fasanya yang sering berubah, membezakannya daripada matahari yang bulat."
         }
       },
       {
         id: "mountain",
         modern: "山",
+        meanings: { zh: "山峦", en: "Mountain", ms: "Gunung" },
         steps: [
           { name: { zh: "甲骨文", en: "Oracle", ms: "Tulang" }, path: `<path d="M18 78 L28 32 L40 78 M36 78 L50 20 L64 78 M60 78 L72 36 L82 78 M18 78 L82 78" stroke-width="6" stroke="#1b1918" fill="none"/>` },
           { name: { zh: "金文", en: "Bronze", ms: "Gangsa" }, path: `<path d="M22 48 L22 75 L78 75 L78 48 M50 20 L50 75" stroke-width="7" stroke="#1b1918" fill="none"/>` },
           { name: { zh: "小篆", en: "Seal", ms: "Cop" }, path: `<path d="M26 24 L26 62 C26 76 74 76 74 62 L74 24 M50 16 L50 64 M34 72 L50 60 L66 72" stroke-width="6" stroke="#1b1918" fill="none"/>` },
-          // 隶书山：横画特长、波势开张
           { name: { zh: "隶书", en: "Clerical", ms: "Kani" }, path: `<path d="M50 22 L50 68 M20 48 L20 70 L86 70 M82 48 L82 70" stroke-width="8" stroke="#1b1918" fill="none"/>` },
-          // 楷书山：中竖直拔、竖折刚劲
           { name: { zh: "楷书", en: "Regular", ms: "Biasa" }, path: `<path d="M50 16 L50 78 M24 40 L24 74 L78 74 M78 40 L78 74" stroke-width="6" stroke="#1b1918" fill="none"/>` }
         ],
         traceSvg: `<path d="M18 78 L28 32 L40 78 M36 78 L50 20 L64 78 M60 78 L72 36 L82 78 M18 78 L82 78" stroke-width="6" stroke="#1b1918" fill="none"/>`,
         info: {
           zh: "象形字。甲骨文宛如大地上起伏矗立的三座险峻山峰，中间主峰突起，两侧侧峰环绕，底部基石相连。《说文》：“山，宣也。宣气散，生万物，有石而高。”",
-          en: "Pictograph of three jagged peaks rising together from a common ground line. The towering center peak flanked by two side ridges captures a grand mountain range.",
-          ms: "Piktograf menggambarkan tiga puncak gunung yang bersambung pada dasarnya. Puncak tengah yang paling tinggi melambangkan banjaran yang menjulang ke langit."
+          en: "Pictograph representing Mountains. Depicts three peaks rising side by side from a shared base, with the tallest peak elevated at the center to evoke a grand mountain range.",
+          ms: "Aksara piktografik melambangkan Gunung. Menggambarkan formasi tiga puncak banjaran di atas tanah dengan puncak tertinggi di tengah melambangkan keagungan bumi."
         }
       },
       {
         id: "water",
         modern: "水",
+        meanings: { zh: "水流", en: "Water", ms: "Air" },
         steps: [
           { name: { zh: "甲骨文", en: "Oracle", ms: "Tulang" }, path: `<path d="M50 20 Q44 38 52 50 Q56 65 48 82" stroke-width="6" stroke="#1b1918" fill="none"/><path d="M38 24 L36 34 M35 62 L38 74 M62 26 L64 36 M63 60 L60 72" stroke-width="5" stroke="#1b1918" fill="none"/>` },
           { name: { zh: "金文", en: "Bronze", ms: "Gangsa" }, path: `<path d="M46 22 C38 38 58 58 48 82" stroke-width="8" stroke="#1b1918" fill="none"/><ellipse cx="36" cy="32" rx="3" ry="5" fill="#1b1918"/><ellipse cx="64" cy="34" rx="3" ry="5" fill="#1b1918"/><ellipse cx="34" cy="68" rx="3" ry="5" fill="#1b1918"/><ellipse cx="66" cy="68" rx="3" ry="5" fill="#1b1918"/>` },
           { name: { zh: "小篆", en: "Seal", ms: "Cop" }, path: `<path d="M50 18 L50 82 M50 36 C34 40 32 64 32 82 M50 36 C66 40 68 64 68 82 M50 22 C34 26 28 42 28 50 M50 22 C66 26 72 42 72 50" stroke-width="5" stroke="#1b1918" fill="none"/>` },
-          // 隶书水：扁平粗阔、燕尾提捺
           { name: { zh: "隶书", en: "Clerical", ms: "Kani" }, path: `<path d="M48 20 L48 58 C48 68 44 76 38 80 M22 46 L38 46 L24 74 M74 42 L52 60 L84 76" stroke-width="8" stroke="#1b1918" fill="none"/>` },
-          // 楷书水：中竖钩直挺、左右撇捺分明
           { name: { zh: "楷书", en: "Regular", ms: "Biasa" }, path: `<path d="M50 16 L50 78 L42 70 M25 40 L40 40 L24 76 M70 34 L54 54 M52 54 L78 82" stroke-width="6" stroke="#1b1918" fill="none"/>` }
         ],
         traceSvg: `<path d="M50 20 Q44 38 52 50 Q56 65 48 82" stroke-width="6" stroke="#1b1918" fill="none"/><path d="M38 24 L36 34 M35 62 L38 74 M62 26 L64 36 M63 60 L60 72" stroke-width="5" stroke="#1b1918" fill="none"/>`,
         info: {
           zh: "象形字。中道为蜿蜒流淌的急流浪花，两侧散落断续的小点象征飞溅的水滴波纹。《说文》：“水，准也。数五行，象众水并流，中有微阳之气也。”",
-          en: "Pictograph capturing rippling flowing water. The central sinuous curve reflects a river channel, flanked by dots and splashes denoting water droplets.",
-          ms: "Piktograf menggambarkan air yang mengalir berliku-liku. Garisan beralun di tengah ialah aliran sungai, manakala titik-titik di sisi menandakan percikan air."
+          en: "Pictograph representing Water. The sinuous vertical curve captures a winding river current, while the surrounding small strokes depict scattered splashing droplets.",
+          ms: "Aksara piktografik melambangkan Air. Garisan meliuk di tengah menggambarkan arus sungai yang berliku, manakala titik-titik di kedua belah sisi menandakan percikan air."
         }
       },
       {
         id: "person",
         modern: "人",
+        meanings: { zh: "人类", en: "Person", ms: "Orang" },
         steps: [
           { name: { zh: "甲骨文", en: "Oracle", ms: "Tulang" }, path: `<path d="M38 28 C45 28 58 35 56 46 C54 58 48 70 48 84 M46 42 L34 60" stroke-width="6" stroke="#1b1918" fill="none"/>` },
           { name: { zh: "金文", en: "Bronze", ms: "Gangsa" }, path: `<path d="M42 24 C50 26 62 36 60 52 L60 84 M50 48 L34 66" stroke-width="9" stroke="#1b1918" fill="none"/>` },
           { name: { zh: "小篆", en: "Seal", ms: "Cop" }, path: `<path d="M40 24 C56 24 64 42 64 84 M54 44 C42 62 36 74 32 84" stroke-width="6" stroke="#1b1918" fill="none"/>` },
-          // 隶书人：蚕头弯曲撇、粗展燕尾捺
           { name: { zh: "隶书", en: "Clerical", ms: "Kani" }, path: `<path d="M46 25 C42 42 34 64 16 80 M42 45 C55 58 72 74 88 80" stroke-width="8" stroke="#1b1918" fill="none"/>` },
-          // 楷书人：撇如短刀、捺如劲波
           { name: { zh: "楷书", en: "Regular", ms: "Biasa" }, path: `<path d="M52 18 C50 42 38 68 18 84 M44 45 C56 58 70 72 82 82" stroke-width="6" stroke="#1b1918" fill="none"/>` }
         ],
         traceSvg: `<path d="M38 28 C45 28 58 35 56 46 C54 58 48 70 48 84 M46 42 L34 60" stroke-width="6" stroke="#1b1918" fill="none"/>`,
         info: {
           zh: "象形字。画出人侧面挺立、拱手前伸的姿态，突出人类直立行走且能以双手劳动、行礼作揖的鲜明特征。《说文》：“人，天地之性最贵者也。象臂胫之形。”",
-          en: "Pictograph of a human shown in side profile, bending slightly forward with outstretched arms, symbolizing bipedal mobility, work, and ceremonial reverence.",
-          ms: "Piktograf sisi seorang manusia yang berdiri membongkok sedikit dengan tangan terhulur, melambangkan kebolehan berdiri tegak, bekerja, dan memberi salam."
+          en: "Pictograph representing a Human/Person. Captures the side silhouette of a person standing slightly bent with arms outstretched, symbolizing upright posture and labor.",
+          ms: "Aksara piktografik melambangkan Manusia/Orang. Memaparkan profil sisi tubuh manusia yang berdiri dengan tangan terhulur ke hadapan, lambang bekerja dan berbudi."
         }
       },
       {
         id: "tree",
         modern: "木",
+        meanings: { zh: "树木", en: "Tree", ms: "Pokok" },
         steps: [
           { name: { zh: "甲骨文", en: "Oracle", ms: "Tulang" }, path: `<line x1="50" y1="18" x2="50" y2="82" stroke-width="7" stroke="#1b1918"/><path d="M50 44 L32 24 M50 44 L68 24 M50 56 L30 80 M50 56 L70 80" stroke-width="6" stroke="#1b1918" fill="none"/>` },
           { name: { zh: "金文", en: "Bronze", ms: "Gangsa" }, path: `<line x1="50" y1="18" x2="50" y2="82" stroke-width="9" stroke="#1b1918"/><path d="M50 42 L28 26 M50 42 L72 26 M50 56 L26 78 M50 56 L74 78" stroke-width="8" stroke="#1b1918" fill="none"/>` },
           { name: { zh: "小篆", en: "Seal", ms: "Cop" }, path: `<line x1="50" y1="18" x2="50" y2="84" stroke-width="6" stroke="#1b1918"/><path d="M28 24 C28 50 50 42 50 42 C50 42 72 50 72 24 M50 42 C34 56 30 76 28 84 M50 42 C66 56 70 76 72 84" stroke-width="6" stroke="#1b1918" fill="none"/>` },
-          // 隶书木：扁横平出、波磔舒张
           { name: { zh: "隶书", en: "Clerical", ms: "Kani" }, path: `<line x1="18" y1="36" x2="82" y2="36" stroke-width="8" stroke="#1b1918"/><line x1="50" y1="18" x2="50" y2="80" stroke-width="8" stroke="#1b1918"/><path d="M50 36 C36 52 24 68 18 78 M50 36 C64 52 74 68 84 78" stroke-width="7" stroke="#1b1918" fill="none"/>` },
-          // 楷书木：横平竖直出中锋
           { name: { zh: "楷书", en: "Regular", ms: "Biasa" }, path: `<line x1="22" y1="34" x2="78" y2="34" stroke-width="6" stroke="#1b1918"/><line x1="50" y1="16" x2="50" y2="82" stroke-width="7" stroke="#1b1918"/><path d="M50 34 C38 52 28 68 18 78 M50 34 C60 50 72 68 82 80" stroke-width="6" stroke="#1b1918" fill="none"/>` }
         ],
         traceSvg: `<line x1="50" y1="18" x2="50" y2="82" stroke-width="7" stroke="#1b1918"/><path d="M50 44 L32 24 M50 44 L68 24 M50 56 L30 80 M50 56 L70 80" stroke-width="6" stroke="#1b1918" fill="none"/>`,
         info: {
           zh: "象形字。上端分岔代表向上伸展的繁茂树冠与枝丫，中间立木为主干，下端分张则为深扎于泥土中的庞大根系。《说文》：“木，冒也。冒地而生。象枝柯根茎之形。”",
-          en: "Pictograph representing a living tree. The upper strokes illustrate foliage reaching upward, the vertical stroke forms the trunk, and downward roots anchor it firmly into the earth.",
-          ms: "Piktograf menggambarkan pokok hidup. Bahagian atas bercabang menunjukkan ranting dahan, tiang tegak ialah batangnya, dan cabang bawah ialah akar tunjang di bumi."
+          en: "Pictograph representing a Tree/Wood. The upward branches depict leafy foliage stretching toward the sky, the central line forms the trunk, and the downward forks represent roots grounded in the earth.",
+          ms: "Aksara piktografik melambangkan Pokok/Kayu. Dahan atas yang bercabang melambangkan pucuk yang merimbun, batang tegak di tengah, dan cabang bawah ialah akar tunjang di dalam tanah."
         }
       }
     ];
 
+    // 严谨、不重复的多语言字典
     const i18n = {
       zh: {
         tag: "象形",
@@ -686,8 +697,8 @@
         scoreSub: "契合度"
       },
       en: {
-        tag: "Roots",
-        title: "Roots",
+        tag: "Hanzi",
+        title: "Echoes of Ink",
         choose: "Select Character",
         evo: "Script Evolution Line",
         play: "▶ Play Morphing Animation",
@@ -709,7 +720,7 @@
       },
       ms: {
         tag: "Aksara",
-        title: "Aksara",
+        title: "Dunia Piktograf",
         choose: "Pilih Aksara",
         evo: "Rentetan Evolusi Aksara",
         play: "▶ Mainkan Animasi",
@@ -736,6 +747,7 @@
     let currentTraceSvg = curChar.traceSvg;
     let canvasMode = "draw";
 
+    // 渲染字库卡片，同时展示字形与翻译
     function renderCharSelector() {
       const box = document.getElementById("charList");
       box.innerHTML = "";
@@ -743,11 +755,17 @@
         const btn = document.createElement("div");
         btn.className = `char-pill ${item.id === curChar.id ? "active" : ""}`;
         btn.onclick = () => selectChar(item.id);
+
+        const subText = curLang === "zh" ? item.meanings.zh : item.meanings[curLang];
+
         btn.innerHTML = `
-          <svg class="ancient-preview" viewBox="0 0 100 100">
+          <svg class="ancient-preview" viewBox="0 0 100 100" stroke="#1b1918" fill="none">
             ${item.steps[0].path}
           </svg>
-          <span class="modern-txt">${item.modern}</span>
+          <div class="modern-txt">
+            <span>${item.modern}</span>
+            <span class="trans-sub">${subText}</span>
+          </div>
         `;
         box.appendChild(btn);
       });
@@ -801,7 +819,9 @@
     }
 
     function updateEtymologyText() {
-      document.getElementById("etymologyContent").innerText = curChar.info[curLang];
+      const meaningLabel = curChar.meanings[curLang];
+      const heading = `【${curChar.modern} · ${meaningLabel}】\n\n`;
+      document.getElementById("etymologyContent").innerText = heading + curChar.info[curLang];
     }
 
     let animTimer = null;
@@ -855,6 +875,7 @@
       document.getElementById("btnExport").innerText = t.export;
       document.getElementById("scoreSub").innerText = t.scoreSub;
 
+      renderCharSelector();
       renderEvolutionLine();
       updateEtymologyText();
     }
