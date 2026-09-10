@@ -35,7 +35,7 @@
       flex-direction: column;
     }
 
-    /* 顶部导航 */
+    /* 顶部导航与精简语言切换 */
     header {
       background: rgba(255, 255, 255, 0.7);
       backdrop-filter: blur(10px);
@@ -86,8 +86,8 @@
       padding: 4px 14px;
       border-radius: 16px;
       cursor: pointer;
-      font-size: 0.8rem;
-      font-weight: 600;
+      font-size: 0.82rem;
+      font-weight: 700;
       color: var(--wood);
       transition: all 0.2s ease;
     }
@@ -97,7 +97,7 @@
       color: #fff;
     }
 
-    /* 主舞台 */
+    /* 主布局 */
     .main-wrap {
       flex: 1;
       max-width: 1200px;
@@ -115,7 +115,7 @@
       }
     }
 
-    /* 左侧卡片 */
+    /* 左侧控制区 */
     .panel {
       background: rgba(255, 255, 255, 0.88);
       border-radius: 14px;
@@ -138,7 +138,7 @@
       align-items: center;
     }
 
-    /* 字选择列表 */
+    /* 字选择框 */
     .char-selector {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
@@ -181,7 +181,7 @@
       color: var(--cinnabar);
     }
 
-    /* 演变展示线 */
+    /* 演变轨迹 */
     .evolution-box {
       background: #fdfaf6;
       border: 1px dashed #cfc2ae;
@@ -204,7 +204,7 @@
       cursor: pointer;
       padding: 6px;
       border-radius: 6px;
-      transition: background 0.2s;
+      transition: background 0.2s, transform 0.2s;
     }
 
     .evo-step:hover {
@@ -240,7 +240,6 @@
       font-weight: 600;
     }
 
-    /* 演变小动画播放器按钮 */
     .play-morph-btn {
       width: 100%;
       border: 1px solid var(--cinnabar);
@@ -263,7 +262,6 @@
       color: white;
     }
 
-    /* 知识点说明 */
     .etymology-box {
       font-size: 0.92rem;
       line-height: 1.7;
@@ -274,7 +272,7 @@
       border-left: 3px solid #b5a28c;
     }
 
-    /* 右侧：书写体验大工作台 */
+    /* 右侧互动画板 */
     .workshop {
       display: flex;
       flex-direction: column;
@@ -295,7 +293,6 @@
       touch-action: none;
     }
 
-    /* 仿米字格 */
     .mige {
       position: absolute;
       inset: 0;
@@ -308,7 +305,6 @@
         linear-gradient(-45deg, transparent 49.6%, var(--cinnabar) 50%, transparent 50.4%);
     }
 
-    /* 水印底样临摹层 */
     .trace-layer {
       position: absolute;
       inset: 0;
@@ -338,7 +334,6 @@
       cursor: crosshair;
     }
 
-    /* 工具条 */
     .desk-bar {
       width: 100%;
       max-width: 540px;
@@ -390,7 +385,6 @@
       background: #8b231c;
     }
 
-    /* 评分印章弹出反馈 */
     .score-badge {
       position: absolute;
       top: 20px;
@@ -435,15 +429,15 @@
       <div class="seal-box" id="logoTag">象形</div>
       <h1 id="mainTitle">字里乾坤 · 象形字演变探索馆</h1>
     </div>
+    <!-- 精简语言按钮标签：中文 / EN / BM -->
     <div class="lang-group">
       <button class="lang-btn active" onclick="setLang('zh')">中文</button>
-      <button class="lang-btn" onclick="setLang('en')">English</button>
-      <button class="lang-btn" onclick="setLang('ms')">B. Melayu</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('ms')">BM</button>
     </div>
   </header>
 
   <main class="main-wrap">
-    <!-- 左侧信息区 -->
     <aside class="panel">
       <div>
         <div class="panel-title" id="tChooseChar">
@@ -472,21 +466,18 @@
       </div>
     </aside>
 
-    <!-- 右侧画板区 -->
     <section class="workshop">
       <div class="canvas-desk">
         <div class="mige"></div>
         <div class="trace-layer" id="traceBox"></div>
         <canvas id="paintCanvas" width="800" height="800"></canvas>
         
-        <!-- 趣味评分印章 -->
         <div class="score-badge" id="scoreBadge">
           <span class="score-num" id="scoreVal">95</span>
           <span class="score-txt" id="scoreVerdict">入木三分</span>
         </div>
       </div>
 
-      <!-- 下方控制条 -->
       <div class="desk-bar">
         <div class="tools-left">
           <label style="cursor: pointer;">
@@ -511,20 +502,18 @@
   </main>
 
   <script>
-    // 精准还原真实演变的矢量数据 (根据你给出的图片精细描摹的 SVG 路径)
+    // 依图片严谨还原的字形演变矢量数据
     const etymologyData = [
       {
         id: "sun",
         modern: "日",
-        // 甲骨文（圆圈+中心实心粗圆点）、金文（上横下弧的盾形+短竖点）、小篆（圆弧底框+贯穿中横）、隶书、楷书
         steps: [
-          { name: "甲骨文", path: `<ellipse cx="50" cy="50" rx="30" ry="34" stroke-width="7"/><circle cx="50" cy="50" r="7" fill="#1b1918"/>` },
-          { name: "金文", path: `<path d="M28 26 C42 22 58 22 72 26 L74 65 C74 76 66 84 50 84 C34 84 26 76 26 65 Z" stroke-width="7"/><line x1="50" y1="46" x2="50" y2="58" stroke-width="8"/>` },
-          { name: "小篆", path: `<path d="M30 22 L70 22 L70 64 C70 78 30 78 30 64 Z" stroke-width="6"/><line x1="30" y1="48" x2="70" y2="48" stroke-width="6"/>` },
-          { name: "隶书", text: "日" },
-          { name: "楷书", text: "日" }
+          { name: { zh: "甲骨文", en: "Oracle", ms: "Tulang" }, path: `<ellipse cx="50" cy="50" rx="30" ry="34" stroke-width="7"/><circle cx="50" cy="50" r="7" fill="#1b1918"/>` },
+          { name: { zh: "金文", en: "Bronze", ms: "Gangsa" }, path: `<path d="M28 26 C42 22 58 22 72 26 L74 65 C74 76 66 84 50 84 C34 84 26 76 26 65 Z" stroke-width="7"/><line x1="50" y1="46" x2="50" y2="58" stroke-width="8"/>` },
+          { name: { zh: "小篆", en: "Seal", ms: "Cop" }, path: `<path d="M30 22 L70 22 L70 64 C70 78 30 78 30 64 Z" stroke-width="6"/><line x1="30" y1="48" x2="70" y2="48" stroke-width="6"/>` },
+          { name: { zh: "隶书", en: "Clerical", ms: "Kani" }, text: "日" },
+          { name: { zh: "楷书", en: "Regular", ms: "Biasa" }, text: "日" }
         ],
-        // 临摹默认选定甲骨文
         traceSvg: `<ellipse cx="50" cy="50" rx="30" ry="34" /><circle cx="50" cy="50" r="7" fill="#1b1918" />`,
         info: {
           zh: "象形字。外层不规则圆轮象征发光浑圆的太阳，中心一实体粗圆点表示并非空心发光体。《说文解字》：“日，实也。太阳之精。象形。”体现古人对实体重力天体的敏锐观察。",
@@ -535,13 +524,12 @@
       {
         id: "moon",
         modern: "月",
-        // 甲骨文（左直右弯残月+中点）、金文（更饱满弧月+竖条）、小篆（垂尾弧形）、隶书、楷书
         steps: [
-          { name: "甲骨文", path: `<path d="M38 18 C37 40 37 60 38 82 C56 75 66 58 64 24 Z" stroke-width="6"/><ellipse cx="49" cy="50" rx="2.5" ry="6" fill="#1b1918"/>` },
-          { name: "金文", path: `<path d="M32 20 C50 22 66 38 66 56 C66 74 35 84 32 84 C48 72 48 34 32 20 Z" stroke-width="7"/><line x1="49" y1="46" x2="49" y2="58" stroke-width="7"/>` },
-          { name: "小篆", path: `<path d="M36 28 C50 16 66 22 66 46 C66 68 46 80 46 90" stroke-width="6"/><line x1="36" y1="42" x2="58" y2="42" stroke-width="5"/><line x1="38" y1="62" x2="56" y2="62" stroke-width="5"/>` },
-          { name: "隶书", text: "月" },
-          { name: "楷体", text: "月" }
+          { name: { zh: "甲骨文", en: "Oracle", ms: "Tulang" }, path: `<path d="M38 18 C37 40 37 60 38 82 C56 75 66 58 64 24 Z" stroke-width="6"/><ellipse cx="49" cy="50" rx="2.5" ry="6" fill="#1b1918"/>` },
+          { name: { zh: "金文", en: "Bronze", ms: "Gangsa" }, path: `<path d="M32 20 C50 22 66 38 66 56 C66 74 35 84 32 84 C48 72 48 34 32 20 Z" stroke-width="7"/><line x1="49" y1="46" x2="49" y2="58" stroke-width="7"/>` },
+          { name: { zh: "小篆", en: "Seal", ms: "Cop" }, path: `<path d="M36 28 C50 16 66 22 66 46 C66 68 46 80 46 90" stroke-width="6"/><line x1="36" y1="42" x2="58" y2="42" stroke-width="5"/><line x1="38" y1="62" x2="56" y2="62" stroke-width="5"/>` },
+          { name: { zh: "隶书", en: "Clerical", ms: "Kani" }, text: "月" },
+          { name: { zh: "楷体", en: "Regular", ms: "Biasa" }, text: "月" }
         ],
         traceSvg: `<path d="M38 18 C37 40 37 60 38 82 C56 75 66 58 64 24 Z" /><ellipse cx="49" cy="50" rx="2.5" ry="6" fill="#1b1918"/>`,
         info: {
@@ -553,13 +541,12 @@
       {
         id: "mountain",
         modern: "山",
-        // 甲骨文（三座三角形山峦并列连底）、金文（主峰尖耸、底平展）、小篆（圆底三立柱并拢）
         steps: [
-          { name: "甲骨文", path: `<path d="M18 78 L28 32 L40 78 M36 78 L50 20 L64 78 M60 78 L72 36 L82 78 M18 78 L82 78" stroke-width="6"/>` },
-          { name: "金文", path: `<path d="M22 48 L22 75 L78 75 L78 48 M50 20 L50 75" stroke-width="7"/>` },
-          { name: "小篆", path: `<path d="M26 24 L26 62 C26 76 74 76 74 62 L74 24 M50 16 L50 64 M34 72 L50 60 L66 72" stroke-width="6"/>` },
-          { name: "隶书", text: "山" },
-          { name: "楷体", text: "山" }
+          { name: { zh: "甲骨文", en: "Oracle", ms: "Tulang" }, path: `<path d="M18 78 L28 32 L40 78 M36 78 L50 20 L64 78 M60 78 L72 36 L82 78 M18 78 L82 78" stroke-width="6"/>` },
+          { name: { zh: "金文", en: "Bronze", ms: "Gangsa" }, path: `<path d="M22 48 L22 75 L78 75 L78 48 M50 20 L50 75" stroke-width="7"/>` },
+          { name: { zh: "小篆", en: "Seal", ms: "Cop" }, path: `<path d="M26 24 L26 62 C26 76 74 76 74 62 L74 24 M50 16 L50 64 M34 72 L50 60 L66 72" stroke-width="6"/>` },
+          { name: { zh: "隶书", en: "Clerical", ms: "Kani" }, text: "山" },
+          { name: { zh: "楷体", en: "Regular", ms: "Biasa" }, text: "山" }
         ],
         traceSvg: `<path d="M18 78 L28 32 L40 78 M36 78 L50 20 L64 78 M60 78 L72 36 L82 78 M18 78 L82 78"/>`,
         info: {
@@ -571,13 +558,12 @@
       {
         id: "water",
         modern: "水",
-        // 依照图片：甲骨文为弯曲小水纹中贯穿、两侧各两滴飞溅小水点；金文变粗流；小篆三束对称并流
         steps: [
-          { name: "甲骨文", path: `<path d="M50 20 Q44 38 52 50 Q56 65 48 82" stroke-width="6"/><path d="M38 24 L36 34 M35 62 L38 74 M62 26 L64 36 M63 60 L60 72" stroke-width="5"/>` },
-          { name: "金文", path: `<path d="M46 22 C38 38 58 58 48 82" stroke-width="8"/><ellipse cx="36" cy="32" rx="3" ry="5" fill="#1b1918"/><ellipse cx="64" cy="34" rx="3" ry="5" fill="#1b1918"/><ellipse cx="34" cy="68" rx="3" ry="5" fill="#1b1918"/><ellipse cx="66" cy="68" rx="3" ry="5" fill="#1b1918"/>` },
-          { name: "小篆", path: `<path d="M50 18 L50 82 M50 36 C34 40 32 64 32 82 M50 36 C66 40 68 64 68 82 M50 22 C34 26 28 42 28 50 M50 22 C66 26 72 42 72 50" stroke-width="5"/>` },
-          { name: "隶书", text: "水" },
-          { name: "楷书", text: "水" }
+          { name: { zh: "甲骨文", en: "Oracle", ms: "Tulang" }, path: `<path d="M50 20 Q44 38 52 50 Q56 65 48 82" stroke-width="6"/><path d="M38 24 L36 34 M35 62 L38 74 M62 26 L64 36 M63 60 L60 72" stroke-width="5"/>` },
+          { name: { zh: "金文", en: "Bronze", ms: "Gangsa" }, path: `<path d="M46 22 C38 38 58 58 48 82" stroke-width="8"/><ellipse cx="36" cy="32" rx="3" ry="5" fill="#1b1918"/><ellipse cx="64" cy="34" rx="3" ry="5" fill="#1b1918"/><ellipse cx="34" cy="68" rx="3" ry="5" fill="#1b1918"/><ellipse cx="66" cy="68" rx="3" ry="5" fill="#1b1918"/>` },
+          { name: { zh: "小篆", en: "Seal", ms: "Cop" }, path: `<path d="M50 18 L50 82 M50 36 C34 40 32 64 32 82 M50 36 C66 40 68 64 68 82 M50 22 C34 26 28 42 28 50 M50 22 C66 26 72 42 72 50" stroke-width="5"/>` },
+          { name: { zh: "隶书", en: "Clerical", ms: "Kani" }, text: "水" },
+          { name: { zh: "楷书", en: "Regular", ms: "Biasa" }, text: "水" }
         ],
         traceSvg: `<path d="M50 20 Q44 38 52 50 Q56 65 48 82" /><path d="M38 24 L36 34 M35 62 L38 74 M62 26 L64 36 M63 60 L60 72"/>`,
         info: {
@@ -589,13 +575,12 @@
       {
         id: "person",
         modern: "人",
-        // 甲骨文（弯腰前倾侧身人形、前垂双臂）；金文更为肥笔；小篆弧度增大
         steps: [
-          { name: "甲骨文", path: `<path d="M38 28 C45 28 58 35 56 46 C54 58 48 70 48 84 M46 42 L34 60" stroke-width="6"/>` },
-          { name: "金文", path: `<path d="M42 24 C50 26 62 36 60 52 L60 84 M50 48 L34 66" stroke-width="9"/>` },
-          { name: "小篆", path: `<path d="M40 24 C56 24 64 42 64 84 M54 44 C42 62 36 74 32 84" stroke-width="6"/>` },
-          { name: "隶书", text: "人" },
-          { name: "楷体", text: "人" }
+          { name: { zh: "甲骨文", en: "Oracle", ms: "Tulang" }, path: `<path d="M38 28 C45 28 58 35 56 46 C54 58 48 70 48 84 M46 42 L34 60" stroke-width="6"/>` },
+          { name: { zh: "金文", en: "Bronze", ms: "Gangsa" }, path: `<path d="M42 24 C50 26 62 36 60 52 L60 84 M50 48 L34 66" stroke-width="9"/>` },
+          { name: { zh: "小篆", en: "Seal", ms: "Cop" }, path: `<path d="M40 24 C56 24 64 42 64 84 M54 44 C42 62 36 74 32 84" stroke-width="6"/>` },
+          { name: { zh: "隶书", en: "Clerical", ms: "Kani" }, text: "人" },
+          { name: { zh: "楷体", en: "Regular", ms: "Biasa" }, text: "人" }
         ],
         traceSvg: `<path d="M38 28 C45 28 58 35 56 46 C54 58 48 70 48 84 M46 42 L34 60"/>`,
         info: {
@@ -607,13 +592,12 @@
       {
         id: "tree",
         modern: "木",
-        // 甲骨文：上下均开叉（上枝、下根）、直挺树干；金文浑厚；小篆枝丫圆垂
         steps: [
-          { name: "甲骨文", path: `<line x1="50" y1="18" x2="50" y2="82" stroke-width="7"/><path d="M50 44 L32 24 M50 44 L68 24 M50 56 L30 80 M50 56 L70 80" stroke-width="6"/>` },
-          { name: "金文", path: `<line x1="50" y1="18" x2="50" y2="82" stroke-width="9"/><path d="M50 42 L28 26 M50 42 L72 26 M50 56 L26 78 M50 56 L74 78" stroke-width="8"/>` },
-          { name: "小篆", path: `<line x1="50" y1="18" x2="50" y2="84" stroke-width="6"/><path d="M28 24 C28 50 50 42 50 42 C50 42 72 50 72 24 M50 42 C34 56 30 76 28 84 M50 42 C66 56 70 76 72 84" stroke-width="6"/>` },
-          { name: "隶书", text: "木" },
-          { name: "楷书", text: "木" }
+          { name: { zh: "甲骨文", en: "Oracle", ms: "Tulang" }, path: `<line x1="50" y1="18" x2="50" y2="82" stroke-width="7"/><path d="M50 44 L32 24 M50 44 L68 24 M50 56 L30 80 M50 56 L70 80" stroke-width="6"/>` },
+          { name: { zh: "金文", en: "Bronze", ms: "Gangsa" }, path: `<line x1="50" y1="18" x2="50" y2="82" stroke-width="9"/><path d="M50 42 L28 26 M50 42 L72 26 M50 56 L26 78 M50 56 L74 78" stroke-width="8"/>` },
+          { name: { zh: "小篆", en: "Seal", ms: "Cop" }, path: `<line x1="50" y1="18" x2="50" y2="84" stroke-width="6"/><path d="M28 24 C28 50 50 42 50 42 C50 42 72 50 72 24 M50 42 C34 56 30 76 28 84 M50 42 C66 56 70 76 72 84" stroke-width="6"/>` },
+          { name: { zh: "隶书", en: "Clerical", ms: "Kani" }, text: "木" },
+          { name: { zh: "楷书", en: "Regular", ms: "Biasa" }, text: "木" }
         ],
         traceSvg: `<line x1="50" y1="18" x2="50" y2="82" /><path d="M50 44 L32 24 M50 44 L68 24 M50 56 L30 80 M50 56 L70 80"/>`,
         info: {
@@ -624,7 +608,6 @@
       }
     ];
 
-    // 多语言包
     const i18n = {
       zh: {
         tag: "象形",
@@ -673,7 +656,6 @@
     let curLang = "zh";
     let curChar = etymologyData[0];
 
-    // 初始化字库选择器
     function renderCharSelector() {
       const box = document.getElementById("charList");
       box.innerHTML = "";
@@ -691,7 +673,6 @@
       });
     }
 
-    // 选中字符更新界面
     function selectChar(id) {
       curChar = etymologyData.find(c => c.id === id);
       renderCharSelector();
@@ -702,14 +683,14 @@
       hideBadge();
     }
 
-    // 渲染演变轨迹卡片
     function renderEvolutionLine() {
       const timeline = document.getElementById("evoTimeline");
       timeline.innerHTML = "";
       curChar.steps.forEach((step, idx) => {
         const item = document.createElement("div");
         item.className = "evo-step";
-        item.title = `点击临摹此形体: ${step.name}`;
+        const displayName = step.name[curLang] || step.name.zh;
+        item.title = `${displayName}`;
         item.onclick = () => {
           if (step.path) {
             document.getElementById("traceBox").innerHTML = `
@@ -727,13 +708,12 @@
 
         item.innerHTML = `
           <div class="evo-glyph">${glyphHtml}</div>
-          <div class="evo-name">${step.name}</div>
+          <div class="evo-name">${displayName}</div>
         `;
         timeline.appendChild(item);
       });
     }
 
-    // 加载描红底纹
     function loadTracingGuide() {
       const traceBox = document.getElementById("traceBox");
       traceBox.innerHTML = `
@@ -747,7 +727,6 @@
       document.getElementById("etymologyContent").innerText = curChar.info[curLang];
     }
 
-    // 趣味演变逐帧动画演示
     let animTimer = null;
     function playEvolution() {
       clearInterval(animTimer);
@@ -762,7 +741,6 @@
           traceBox.innerHTML = `<span style="font-size: 160px; color: #a62b24;">${s.text}</span>`;
         }
 
-        // 高亮对应的步骤
         const stepEls = document.querySelectorAll(".evo-step");
         stepEls.forEach((el, i) => {
           el.style.transform = i === stepIndex ? "scale(1.18)" : "scale(1)";
@@ -777,7 +755,6 @@
       }, 700);
     }
 
-    // 切换多语言
     function setLang(lang) {
       curLang = lang;
       document.querySelectorAll(".lang-btn").forEach(b => b.classList.remove("active"));
@@ -796,10 +773,10 @@
       document.getElementById("btnGrade").innerText = t.grade;
       document.getElementById("btnExport").innerText = t.export;
 
+      renderEvolutionLine();
       updateEtymologyText();
     }
 
-    // Canvas 画板交互及毛笔水墨拟真
     const canvas = document.getElementById("paintCanvas");
     const ctx = canvas.getContext("2d");
     let isDrawing = false;
@@ -832,7 +809,6 @@
       const p1 = points[points.length - 2];
       const p2 = points[points.length - 1];
 
-      // 拟真毛笔笔触
       ctx.beginPath();
       ctx.moveTo(p1.x, p1.y);
       ctx.lineTo(p2.x, p2.y);
@@ -874,7 +850,6 @@
       document.getElementById("traceBox").style.opacity = show ? "0.22" : "0";
     }
 
-    // 趣味契合度智能算法与印章动画
     function evaluateWriting() {
       const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
       let filledPixels = 0;
@@ -883,11 +858,15 @@
       }
 
       if (filledPixels < 300) {
-        alert(curLang === "zh" ? "画板空空如也，请挥毫下笔！" : "Please draw something first!");
+        const tip = {
+          zh: "画板空空如也，请挥毫下笔！",
+          en: "The canvas is empty, please write something first!",
+          ms: "Papan lukis kosong, sila tulis dahulu!"
+        };
+        alert(tip[curLang] || tip.zh);
         return;
       }
 
-      // 结合笔画密度与比例给出一个 85~99 间的随机高分反馈
       const score = Math.floor(86 + Math.random() * 13);
       const verdicts = i18n[curLang].congrats;
       const verdict = verdicts[Math.floor(Math.random() * verdicts.length)];
@@ -897,7 +876,7 @@
 
       const badge = document.getElementById("scoreBadge");
       badge.classList.remove("show");
-      void badge.offsetWidth; // 触发 reflow 重置动画
+      void badge.offsetWidth;
       badge.classList.add("show");
     }
 
@@ -905,21 +884,17 @@
       document.getElementById("scoreBadge").classList.remove("show");
     }
 
-    // 导出并压盖朱砂印章
     function exportPainting() {
       const out = document.createElement("canvas");
       out.width = canvas.width;
       out.height = canvas.height;
       const oCtx = out.getContext("2d");
 
-      // 宣纸底色
       oCtx.fillStyle = "#f6f1e8";
       oCtx.fillRect(0, 0, out.width, out.height);
 
-      // 临摹墨宝
       oCtx.drawImage(canvas, 0, 0);
 
-      // 钤盖右下角朱砂印章
       const sz = 100;
       const x = out.width - sz - 35;
       const y = out.height - sz - 35;
@@ -941,7 +916,6 @@
       link.click();
     }
 
-    // 页面初始化
     renderCharSelector();
     renderEvolutionLine();
     updateEtymologyText();
