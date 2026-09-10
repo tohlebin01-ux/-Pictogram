@@ -80,39 +80,6 @@
       white-space: nowrap;
     }
 
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* 功能模式切换：临摹 vs 猜字 */
-    .tab-switch {
-      display: flex;
-      background: #dfd3c1;
-      padding: 2px;
-      border-radius: 16px;
-      gap: 2px;
-    }
-
-    .tab-btn {
-      border: none;
-      background: transparent;
-      padding: 3px 10px;
-      border-radius: 14px;
-      cursor: pointer;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--wood);
-      transition: all 0.2s;
-    }
-
-    .tab-btn.active {
-      background: #fff;
-      color: var(--cinnabar);
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
     .lang-group {
       display: flex;
       gap: 2px;
@@ -125,7 +92,7 @@
     .lang-btn {
       border: none;
       background: transparent;
-      padding: 4px 8px;
+      padding: 4px 10px;
       border-radius: 14px;
       cursor: pointer;
       font-size: 0.75rem;
@@ -178,17 +145,16 @@
       padding-left: 8px;
     }
 
-    /* 10 字横向滚动 / 双行网格 */
     .char-selector {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(6, 1fr);
       gap: 6px;
     }
 
     .char-pill {
       border: 1px solid #d3c4af;
       border-radius: 8px;
-      padding: 6px 0;
+      padding: 8px 0;
       background: #faf6f0;
       cursor: pointer;
       display: flex;
@@ -526,69 +492,6 @@
       font-size: 8px;
       opacity: 0.8;
     }
-
-    /* 猜字游戏区视图 */
-    .game-section {
-      display: none;
-      max-width: 600px;
-      margin: 20px auto;
-      background: white;
-      padding: 24px;
-      border-radius: 14px;
-      border: 1px solid #d5c8b5;
-      box-shadow: 0 10px 30px var(--shadow);
-      text-align: center;
-    }
-
-    .game-glyph-card {
-      width: 160px;
-      height: 160px;
-      margin: 18px auto;
-      border: 2px dashed #d5c8b5;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #faf6f0;
-    }
-
-    .game-glyph-card svg {
-      width: 80%;
-      height: 80%;
-      stroke: var(--ink);
-      fill: none;
-    }
-
-    .game-options {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 20px;
-    }
-
-    .game-opt-btn {
-      padding: 12px;
-      border: 1px solid #d5c8b5;
-      border-radius: 8px;
-      background: #fdfaf6;
-      cursor: pointer;
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: var(--wood);
-      transition: all 0.2s;
-    }
-
-    .game-opt-btn:hover {
-      background: #f5ece0;
-      border-color: var(--cinnabar);
-    }
-
-    .game-feedback {
-      margin-top: 16px;
-      font-weight: bold;
-      min-height: 24px;
-      font-size: 0.95rem;
-    }
   </style>
 </head>
 <body>
@@ -600,28 +503,19 @@
         <h1 id="mainTitle">字里乾坤</h1>
       </div>
 
-      <div class="header-right">
-        <!-- 模式：书写馆 vs 猜字乐 -->
-        <div class="tab-switch">
-          <button class="tab-btn active" id="tabStudio" onclick="switchView('studio')">临摹</button>
-          <button class="tab-btn" id="tabGame" onclick="switchView('game')">猜字</button>
-        </div>
-
-        <div class="lang-group">
-          <button class="lang-btn active" onclick="setLang('zh')">中文</button>
-          <button class="lang-btn" onclick="setLang('en')">EN</button>
-          <button class="lang-btn" onclick="setLang('ms')">BM</button>
-        </div>
+      <div class="lang-group">
+        <button class="lang-btn active" onclick="setLang('zh')">中文</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('ms')">BM</button>
       </div>
     </div>
   </header>
 
-  <!-- 视图 1：书写与字形探索馆 -->
-  <main class="main-wrap" id="viewStudio">
+  <main class="main-wrap">
     <aside class="panel">
       <div>
         <div class="panel-title" id="tChooseChar">
-          <span>选择字例 (10字)</span>
+          <span>选择字例</span>
         </div>
         <div class="char-selector" id="charList" style="margin-top: 10px;"></div>
       </div>
@@ -702,20 +596,8 @@
     </section>
   </main>
 
-  <!-- 视图 2：古字猜猜看游戏 -->
-  <section class="game-section" id="viewGame">
-    <h2 style="color: var(--wood); margin-bottom: 8px;" id="gameHeading">古字猜猜看</h2>
-    <p style="font-size: 0.88rem; color: #666;" id="gameSubHeading">根据甲骨文象形特征，猜猜这是现代的什么字？</p>
-
-    <div class="game-glyph-card" id="gameCard"></div>
-    <div class="game-feedback" id="gameFeedback"></div>
-    <div class="game-options" id="gameOptions"></div>
-
-    <button class="action-btn" style="margin-top: 20px;" onclick="generateQuiz()" id="btnNextQuiz">换一题</button>
-  </section>
-
   <script>
-    // 包含 10 个代表性象形字的数据库（日、月、山、水、人、木、雨、火、鱼、目）
+    // 严谨保留 6 个核心字：日、月、山、水、人、目
     const etymologyData = [
       {
         id: "sun",
@@ -808,78 +690,6 @@
         }
       },
       {
-        id: "tree",
-        modern: "木",
-        meanings: { zh: "树木", en: "Tree", ms: "Pokok" },
-        steps: [
-          { name: { zh: "甲骨文", en: "Oracle", ms: "Tulang" }, path: `<line x1="50" y1="18" x2="50" y2="82" stroke-width="7" stroke="#1b1918"/><path d="M50 44 L32 24 M50 44 L68 24 M50 56 L30 80 M50 56 L70 80" stroke-width="6" stroke="#1b1918" fill="none"/>` },
-          { name: { zh: "金文", en: "Bronze", ms: "Gangsa" }, path: `<line x1="50" y1="18" x2="50" y2="82" stroke-width="9" stroke="#1b1918"/><path d="M50 42 L28 26 M50 42 L72 26 M50 56 L26 78 M50 56 L74 78" stroke-width="8" stroke="#1b1918" fill="none"/>` },
-          { name: { zh: "小篆", en: "Seal", ms: "Cop" }, path: `<line x1="50" y1="18" x2="50" y2="84" stroke-width="6" stroke="#1b1918"/><path d="M28 24 C28 50 50 42 50 42 C50 42 72 50 72 24 M50 42 C34 56 30 76 28 84 M50 42 C66 56 70 76 72 84" stroke-width="6" stroke="#1b1918" fill="none"/>` },
-          { name: { zh: "隶书", en: "Clerical", ms: "Kani" }, path: `<line x1="18" y1="36" x2="82" y2="36" stroke-width="8" stroke="#1b1918"/><line x1="50" y1="18" x2="50" y2="80" stroke-width="8" stroke="#1b1918"/><path d="M50 36 C36 52 24 68 18 78 M50 36 C64 52 74 68 84 78" stroke-width="7" stroke="#1b1918" fill="none"/>` },
-          { name: { zh: "楷书", en: "Regular", ms: "Biasa" }, path: `<line x1="22" y1="34" x2="78" y2="34" stroke-width="6" stroke="#1b1918"/><line x1="50" y1="16" x2="50" y2="82" stroke-width="7" stroke="#1b1918"/><path d="M50 34 C38 52 28 68 18 78 M50 34 C60 50 72 68 82 80" stroke-width="6" stroke="#1b1918" fill="none"/>` }
-        ],
-        traceSvg: `<line x1="50" y1="18" x2="50" y2="82" stroke-width="7" stroke="#1b1918"/><path d="M50 44 L32 24 M50 44 L68 24 M50 56 L30 80 M50 56 L70 80" stroke-width="6" stroke="#1b1918" fill="none"/>`,
-        info: {
-          zh: "象形字。上端分岔代表伸展的树冠与枝丫，中间立木为主干，下端分张为深入泥土的根系。《说文》：“木，冒也。冒地而生。”",
-          en: "Pictograph representing a Tree. Upward branches depict foliage, the central line forms the trunk, and downward forks signify anchoring roots.",
-          ms: "Aksara piktografik melambangkan Pokok. Bahagian atas bercabang melambangkan ranting dahan, tiang tegak ialah batang, dan cabang bawah ialah akar tunjang."
-        }
-      },
-      {
-        id: "rain",
-        modern: "雨",
-        meanings: { zh: "降雨", en: "Rain", ms: "Hujan" },
-        steps: [
-          { name: { zh: "甲骨文", en: "Oracle", ms: "Tulang" }, path: `<path d="M24 30 C50 18 76 30 76 30 M50 25 L50 82" stroke-width="6" stroke="#1b1918" fill="none"/><line x1="34" y1="46" x2="34" y2="58" stroke-width="6" stroke="#1b1918"/><line x1="34" y1="68" x2="34" y2="80" stroke-width="6" stroke="#1b1918"/><line x1="66" y1="46" x2="66" y2="58" stroke-width="6" stroke="#1b1918"/><line x1="66" y1="68" x2="66" y2="80" stroke-width="6" stroke="#1b1918"/>` },
-          { name: { zh: "金文", en: "Bronze", ms: "Gangsa" }, path: `<path d="M22 26 L78 26 L78 42 L22 42 Z M50 42 L50 82" stroke-width="6" stroke="#1b1918" fill="none"/><circle cx="35" cy="55" r="4" fill="#1b1918"/><circle cx="35" cy="74" r="4" fill="#1b1918"/><circle cx="65" cy="55" r="4" fill="#1b1918"/><circle cx="65" cy="74" r="4" fill="#1b1918"/>` },
-          { name: { zh: "小篆", en: "Seal", ms: "Cop" }, path: `<path d="M24 24 L76 24 M50 24 L50 84 M28 42 C40 38 60 38 72 42 L72 78" stroke-width="6" stroke="#1b1918" fill="none"/><circle cx="38" cy="58" r="3" fill="#1b1918"/><circle cx="62" cy="58" r="3" fill="#1b1918"/><circle cx="38" cy="74" r="3" fill="#1b1918"/><circle cx="62" cy="74" r="3" fill="#1b1918"/>` },
-          { name: { zh: "隶书", en: "Clerical", ms: "Kani" }, path: `<path d="M18 25 L82 25 M50 25 L50 80 M24 45 L76 45 L76 76 L24 76" stroke-width="7" stroke="#1b1918" fill="none"/>` },
-          { name: { zh: "楷书", en: "Regular", ms: "Biasa" }, path: `<path d="M22 22 L78 22 M50 22 L50 82 M26 42 L74 42 L74 78 L26 78 M38 54 L38 60 M62 54 L62 60 M38 68 L38 74 M62 68 L62 74" stroke-width="6" stroke="#1b1918" fill="none"/>` }
-        ],
-        traceSvg: `<path d="M24 30 C50 18 76 30 76 30 M50 25 L50 82" stroke-width="6" stroke="#1b1918" fill="none"/><line x1="34" y1="46" x2="34" y2="58" stroke-width="6" stroke="#1b1918"/><line x1="34" y1="68" x2="34" y2="80" stroke-width="6" stroke="#1b1918"/><line x1="66" y1="46" x2="66" y2="58" stroke-width="6" stroke="#1b1918"/><line x1="66" y1="68" x2="66" y2="80" stroke-width="6" stroke="#1b1918"/>`,
-        info: {
-          zh: "象形字。顶端横画象征天空与苍穹云层，其下四散垂直滴落的点划象征自天而降的雨丝水滴。《说文》：“雨，水从云下也。一象天，冂象云，水零也。”",
-          en: "Pictograph representing Rain. The overhead arch/horizontal bar depicts the cloud-laden sky, from which streams of droplets shower downward.",
-          ms: "Aksara piktografik melambangkan Hujan. Garisan di atas melambangkan awan langit, manakala titisan menegak di bawahnya menandakan air hujan yang turun mencurah."
-        }
-      },
-      {
-        id: "fire",
-        modern: "火",
-        meanings: { zh: "火焰", en: "Fire", ms: "Api" },
-        steps: [
-          { name: { zh: "甲骨文", en: "Oracle", ms: "Tulang" }, path: `<path d="M50 18 Q42 45 50 82 M50 50 Q32 35 24 55 Q34 68 50 68 M50 50 Q68 35 76 55 Q66 68 50 68" stroke-width="6" stroke="#1b1918" fill="none"/>` },
-          { name: { zh: "金文", en: "Bronze", ms: "Gangsa" }, path: `<path d="M50 16 C38 46 42 66 50 82 M34 44 C26 56 36 72 50 72 M66 44 C74 56 64 72 50 72" stroke-width="8" stroke="#1b1918" fill="none"/>` },
-          { name: { zh: "小篆", en: "Seal", ms: "Cop" }, path: `<path d="M50 16 L50 84 M30 38 C34 58 48 70 50 70 M70 38 C66 58 52 70 50 70" stroke-width="6" stroke="#1b1918" fill="none"/>` },
-          { name: { zh: "隶书", en: "Clerical", ms: "Kani" }, path: `<path d="M48 20 C46 50 38 70 20 84 M46 48 C58 62 72 74 84 82 M26 46 L38 56 M74 46 L62 56" stroke-width="7" stroke="#1b1918" fill="none"/>` },
-          { name: { zh: "楷书", en: "Regular", ms: "Biasa" }, path: `<path d="M52 18 C50 48 38 72 22 84 M44 48 C56 60 70 74 82 82 M28 42 L38 52 M72 40 L62 52" stroke-width="6" stroke="#1b1918" fill="none"/>` }
-        ],
-        traceSvg: `<path d="M50 18 Q42 45 50 82 M50 50 Q32 35 24 55 Q34 68 50 68 M50 50 Q68 35 76 55 Q66 68 50 68" stroke-width="6" stroke="#1b1918" fill="none"/>`,
-        info: {
-          zh: "象形字。画出篝火熊熊燃烧之态，中道为主烈焰，左右跳跃飞腾为炽热火星与旁逸火舌。《说文》：“火，毁也。南方之行，炎而上。象形。”",
-          en: "Pictograph representing Fire. Illustrates tongues of flame leaping upwards from a blazing campfire with flickering sparks on both sides.",
-          ms: "Aksara piktografik melambangkan Api. Menggambarkan nyalaan api marak yang menjulang tinggi bersama percikan bunga api di sisi."
-        }
-      },
-      {
-        id: "fish",
-        modern: "鱼",
-        meanings: { zh: "游鱼", en: "Fish", ms: "Ikan" },
-        steps: [
-          { name: { zh: "甲骨文", en: "Oracle", ms: "Tulang" }, path: `<path d="M50 16 L65 32 L35 32 Z M35 32 C30 52 35 68 50 72 C65 68 70 52 65 32 M35 45 L65 45 M35 58 L65 58 M50 72 L32 86 M50 72 L68 86" stroke-width="6" stroke="#1b1918" fill="none"/>` },
-          { name: { zh: "金文", en: "Bronze", ms: "Gangsa" }, path: `<path d="M50 18 L64 34 L36 34 Z M36 34 L36 68 L64 68 L64 34 M36 50 L64 50 M50 68 L30 84 M50 68 L70 84" stroke-width="7" stroke="#1b1918" fill="none"/>` },
-          { name: { zh: "小篆", en: "Seal", ms: "Cop" }, path: `<path d="M50 16 C38 28 38 36 50 44 C62 36 62 28 50 16 Z M34 44 L66 44 L66 74 L34 74 Z M34 58 L66 58 M50 74 L34 86 M50 74 L66 86" stroke-width="6" stroke="#1b1918" fill="none"/>` },
-          { name: { zh: "隶书", en: "Clerical", ms: "Kani" }, path: `<path d="M50 18 L32 34 L68 34 Z M30 34 L70 34 L70 65 L30 65 Z M30 50 L70 50 M24 80 L76 80" stroke-width="7" stroke="#1b1918" fill="none"/>` },
-          { name: { zh: "楷书", en: "Regular", ms: "Biasa" }, path: `<path d="M50 16 L34 32 L66 32 Z M32 32 L68 32 L68 66 L32 66 Z M32 48 L68 48 M24 82 L76 82" stroke-width="6" stroke="#1b1918" fill="none"/>` }
-        ],
-        traceSvg: `<path d="M50 16 L65 32 L35 32 Z M35 32 C30 52 35 68 50 72 C65 68 70 52 65 32 M35 45 L65 45 M35 58 L65 58 M50 72 L32 86 M50 72 L68 86" stroke-width="6" stroke="#1b1918" fill="none"/>`,
-        info: {
-          zh: "象形字。上方尖角为鱼头，中间网格纹为饱满鱼身与密密鱼鳞，下端分叉则为游水摆动的鱼尾与背腹鳍。《说文》：“鱼，水虫也。象形。鱼尾与燕尾相似。”",
-          en: "Pictograph representing a Fish. The top depicts the pointed head, the criss-cross middle forms the scaly body, and the bottom strokes illustrate the fluked tail.",
-          ms: "Aksara piktografik melambangkan Ikan. Bahagian atas ialah kepala runcing, badan bersisik di tengah, dan cabang bawah ialah ekor ikan yang meliuk di air."
-        }
-      },
-      {
         id: "eye",
         modern: "目",
         meanings: { zh: "眼睛", en: "Eye", ms: "Mata" },
@@ -903,9 +713,7 @@
       zh: {
         tag: "象形",
         title: "字里乾坤",
-        tabStudio: "临摹",
-        tabGame: "猜字",
-        choose: "选择字例 (10字)",
+        choose: "选择字例",
         evo: "字形演变轨迹",
         play: "▶ 动态演示演变过程",
         etym: "造字本义与释读",
@@ -924,19 +732,12 @@
           good: "骨力尽现",
           perfect: "入木三分"
         },
-        scoreSub: "契合度",
-        gameTitle: "古字猜猜看",
-        gameSubtitle: "根据甲骨文象形特征，猜猜这是现代的什么字？",
-        gameNext: "换一题",
-        gameCorrect: "🎉 答对啦！太有造字悟性了！",
-        gameWrong: "💡 再仔细观察物象特征看看哦！"
+        scoreSub: "契合度"
       },
       en: {
         tag: "Hanzi",
         title: "Echoes of Ink",
-        tabStudio: "Studio",
-        tabGame: "Quiz",
-        choose: "Characters (10)",
+        choose: "Select Character",
         evo: "Script Evolution Line",
         play: "▶ Play Morphing Animation",
         etym: "Original Meaning & Etymology",
@@ -955,19 +756,12 @@
           good: "Well Shaped",
           perfect: "Masterful!"
         },
-        scoreSub: "Accuracy",
-        gameTitle: "Guess the Pictogram",
-        gameSubtitle: "Guess the modern character based on its ancient oracle silhouette!",
-        gameNext: "Next Question",
-        gameCorrect: "🎉 Bingo! You have great pictographic intuition!",
-        gameWrong: "💡 Not quite, take a closer look at the natural shape!"
+        scoreSub: "Accuracy"
       },
       ms: {
         tag: "Aksara",
         title: "Dunia Piktograf",
-        tabStudio: "Menulis",
-        tabGame: "Kuiz",
-        choose: "Pilihan Aksara (10)",
+        choose: "Pilih Aksara",
         evo: "Rentetan Evolusi Aksara",
         play: "▶ Mainkan Animasi",
         etym: "Etimologi & Makna Asal",
@@ -986,12 +780,7 @@
           good: "Bentuk Tepat",
           perfect: "Karya Agung!"
         },
-        scoreSub: "Ketepatan",
-        gameTitle: "Teka Aksara Kuno",
-        gameSubtitle: "Teka aksara moden berdasarkan bentuk piktograf tulang ramalan purba!",
-        gameNext: "Soalan Seterusnya",
-        gameCorrect: "🎉 Tepat sekali! Anda amat peka terhadap seni purba!",
-        gameWrong: "💡 Cuba lagi, perhatikan ciri-ciri semula jadi pada aksara!"
+        scoreSub: "Ketepatan"
       }
     };
 
@@ -999,45 +788,6 @@
     let curChar = etymologyData[0];
     let currentTraceSvg = curChar.traceSvg;
     let canvasMode = "draw";
-
-    // 原生 Web Audio API 合成沉浸式古音磬鸣
-    let audioCtx = null;
-    function playChimeSound() {
-      try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-
-        osc.type = "sine";
-        // 模拟古代编钟/石磬泛音基频
-        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5 音符
-        osc.frequency.exponentialRampToValueAtTime(580, audioCtx.currentTime + 1.2);
-
-        gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.4);
-
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-
-        osc.start();
-        osc.stop(audioCtx.currentTime + 1.4);
-      } catch (e) {
-        // 部分浏览器不支持或限制静音自动播放，平滑忽略
-      }
-    }
-
-    // 视图切换：临摹馆 vs 猜字乐
-    function switchView(view) {
-      document.getElementById("tabStudio").classList.toggle("active", view === "studio");
-      document.getElementById("tabGame").classList.toggle("active", view === "game");
-
-      document.getElementById("viewStudio").style.display = view === "studio" ? "grid" : "none";
-      document.getElementById("viewGame").style.display = view === "game" ? "block" : "none";
-
-      if (view === "game") generateQuiz();
-    }
 
     function renderCharSelector() {
       const box = document.getElementById("charList");
@@ -1153,8 +903,6 @@
       const t = i18n[lang];
       document.getElementById("logoTag").innerText = t.tag;
       document.getElementById("mainTitle").innerText = t.title;
-      document.getElementById("tabStudio").innerText = t.tabStudio;
-      document.getElementById("tabGame").innerText = t.tabGame;
       document.getElementById("tChooseChar").innerHTML = `<span>${t.choose}</span>`;
       document.getElementById("tEvolution").innerHTML = `<span>${t.evo}</span>`;
       document.getElementById("btnPlayEvo").innerText = t.play;
@@ -1169,11 +917,6 @@
       document.getElementById("lblCustomSeal").innerText = t.customSeal;
       document.getElementById("lblSealTip").innerText = t.sealTip;
       document.getElementById("scoreSub").innerText = t.scoreSub;
-
-      // 游戏多语言
-      document.getElementById("gameHeading").innerText = t.gameTitle;
-      document.getElementById("gameSubHeading").innerText = t.gameSubtitle;
-      document.getElementById("btnNextQuiz").innerText = t.gameNext;
 
       renderCharSelector();
       renderEvolutionLine();
@@ -1197,7 +940,7 @@
       }
     }
 
-    // 拟真水墨笔触与动态压感
+    // 动态水墨笔触与速度压感
     const canvas = document.getElementById("paintCanvas");
     const ctx = canvas.getContext("2d");
     let isDrawing = false;
@@ -1245,7 +988,6 @@
       const dy = pos.y - lastY;
       const dist = Math.hypot(dx, dy);
 
-      // 计算速度与动态水墨线宽（下笔快变细，停顿则晕散变粗）
       const speed = dist / dt;
       const baseWidth = parseFloat(document.getElementById("penSize").value);
       const targetWidth = Math.max(baseWidth * 0.45, Math.min(baseWidth * 1.35, baseWidth - speed * 2.8));
@@ -1288,7 +1030,7 @@
       document.getElementById("traceBox").style.opacity = show ? "0.22" : "0";
     }
 
-    // 宽容而有趣的评分系统
+    // 宽松契合度评分
     function evaluateRealScore() {
       const userImg = ctx.getImageData(0, 0, canvas.width, canvas.height);
       let userPixelCount = 0;
@@ -1305,8 +1047,6 @@
         alert(tip[curLang] || tip.zh);
         return;
       }
-
-      playChimeSound(); // 触发古磬音效
 
       const offCanvas = document.createElement("canvas");
       offCanvas.width = canvas.width;
@@ -1376,158 +1116,172 @@
       document.getElementById("scoreBadge").classList.remove("show");
     }
 
-    // 生成精美竖版文创书签卡片（含专属落款与认证印章）
+    // 重新设计的典雅东方文创书签（竖版古籍美学）
     function exportPainting() {
-      playChimeSound();
-
       const out = document.createElement("canvas");
-      out.width = 900;
-      out.height = 1450;
+      out.width = 680;
+      out.height = 1420;
       const o = out.getContext("2d");
 
-      // 宣纸底色与雅致浅边框
-      o.fillStyle = "#f6f1e8";
+      // 1. 底色：温润天然宣纸色
+      o.fillStyle = "#f7f3eb";
       o.fillRect(0, 0, out.width, out.height);
 
-      o.strokeStyle = "#cfc3b0";
-      o.lineWidth = 3;
-      o.strokeRect(36, 36, out.width - 72, out.height - 72);
+      // 2. 边框：双层宋锦细边线
+      o.strokeStyle = "#cfc4b0";
+      o.lineWidth = 1.5;
+      o.strokeRect(32, 32, out.width - 64, out.height - 64);
 
       o.strokeStyle = "#a62b24";
-      o.lineWidth = 1;
-      o.strokeRect(44, 44, out.width - 88, out.height - 88);
+      o.lineWidth = 2.5;
+      o.strokeRect(42, 42, out.width - 84, out.height - 84);
 
-      // 顶部标题栏
-      o.fillStyle = "#a62b24";
-      o.font = "bold 44px 'PingFang SC', serif";
-      o.textAlign = "center";
-      o.fillText("字 里 乾 坤", out.width / 2, 125);
+      // 四角装饰回纹折角
+      const corner = (x, y, dx, dy) => {
+        o.beginPath();
+        o.moveTo(x + dx * 16, y);
+        o.lineTo(x, y);
+        o.lineTo(x, y + dy * 16);
+        o.strokeStyle = "#a62b24";
+        o.lineWidth = 2.5;
+        o.stroke();
+      };
+      corner(42, 42, 1, 1);
+      corner(out.width - 42, 42, -1, 1);
+      corner(42, out.height - 42, 1, -1);
+      corner(out.width - 42, out.height - 42, -1, -1);
 
-      o.fillStyle = "#665747";
-      o.font = "20px 'Segoe UI', sans-serif";
-      o.fillText("Pictographic Character Workshop", out.width / 2, 165);
-
-      // 字题与三语释义小徽章
-      o.fillStyle = "#e9dfce";
-      o.fillRect(out.width / 2 - 160, 205, 320, 52);
-      o.strokeStyle = "#4a3728";
-      o.lineWidth = 2;
-      o.strokeRect(out.width / 2 - 160, 205, 320, 52);
-
-      o.fillStyle = "#4a3728";
-      o.font = "bold 26px 'PingFang SC', serif";
-      const transTitle = `${curChar.modern} · ${curChar.meanings.en} · ${curChar.meanings.ms}`;
-      o.fillText(transTitle, out.width / 2, 240);
-
-      // 中间临摹字画展区
-      const deskBoxSize = 720;
-      const deskX = (out.width - deskBoxSize) / 2;
-      const deskY = 290;
-
-      o.fillStyle = "#fffefc";
-      o.fillRect(deskX, deskY, deskBoxSize, deskBoxSize);
-      o.strokeStyle = "#b5a38b";
-      o.lineWidth = 2;
-      o.strokeRect(deskX, deskY, deskBoxSize, deskBoxSize);
-
-      // 复制书写墨迹
-      o.drawImage(canvas, deskX, deskY, deskBoxSize, deskBoxSize);
-
-      // 右下角：自定义朱砂名章（落款）
-      const customSealText = (document.getElementById("customSealInput").value || "文心").trim();
-      const sealW = 90;
-      const sealX = deskX + deskBoxSize - sealW - 24;
-      const sealY = deskY + deskBoxSize - sealW - 24;
-
+      // 3. 顶部：引首章与馆藏主题
+      o.save();
       o.strokeStyle = "#a62b24";
-      o.lineWidth = 4;
-      o.strokeRect(sealX, sealY, sealW, sealW);
-
+      o.lineWidth = 2.5;
+      o.beginPath();
+      o.ellipse(90, 95, 18, 32, 0, 0, Math.PI * 2);
+      o.stroke();
       o.fillStyle = "#a62b24";
-      o.font = "bold 28px 'Noto Serif SC', serif";
+      o.font = "bold 15px 'Noto Serif SC', serif";
       o.textAlign = "center";
       o.textBaseline = "middle";
-      if (customSealText.length === 1) {
-        o.fillText(customSealText, sealX + sealW / 2, sealY + sealW / 2);
+      o.fillText("溯", 90, 84);
+      o.fillText("古", 90, 106);
+      o.restore();
+
+      // 主题字：字里乾坤
+      o.fillStyle = "#3e3226";
+      o.font = "600 24px 'Noto Serif SC', 'Kaiti SC', serif";
+      o.textAlign = "center";
+      o.letterSpacing = "6px";
+      o.fillText("字 里 乾 坤", out.width / 2, 95);
+
+      // 细装饰线
+      o.strokeStyle = "#d6cbba";
+      o.lineWidth = 1;
+      o.beginPath();
+      o.moveTo(140, 135);
+      o.lineTo(out.width - 140, 135);
+      o.stroke();
+
+      // 4. 字名与三语物象标签
+      o.fillStyle = "#a62b24";
+      o.font = "bold 46px 'Kaiti SC', STKaiti, serif";
+      o.textAlign = "center";
+      o.fillText(curChar.modern, out.width / 2, 195);
+
+      o.fillStyle = "#7a6b5c";
+      o.font = "14px -apple-system, sans-serif";
+      o.letterSpacing = "2px";
+      const subTitle = `${curChar.meanings.zh}  ·  ${curChar.meanings.en}  ·  ${curChar.meanings.ms}`;
+      o.fillText(subTitle, out.width / 2, 230);
+
+      // 5. 画心展区（自然融入宣纸，去除沉重方黑框）
+      const artSize = 480;
+      const artX = (out.width - artSize) / 2;
+      const artY = 270;
+
+      // 浅色米字格打底
+      o.save();
+      o.strokeStyle = "#ece3d3";
+      o.lineWidth = 1;
+      o.strokeRect(artX, artY, artSize, artSize);
+      o.beginPath();
+      o.moveTo(artX + artSize / 2, artY);
+      o.lineTo(artX + artSize / 2, artY + artSize);
+      o.moveTo(artX, artY + artSize / 2);
+      o.lineTo(artX + artSize, artY + artSize / 2);
+      o.stroke();
+      o.restore();
+
+      // 绘制用户挥毫墨宝
+      o.drawImage(canvas, artX, artY, artSize, artSize);
+
+      // 6. 右下角落款朱砂名章
+      const sealName = (document.getElementById("customSealInput").value || "文心").trim();
+      const sSize = 74;
+      const sX = artX + artSize - sSize - 12;
+      const sY = artY + artSize - sSize - 12;
+
+      o.fillStyle = "rgba(166, 43, 36, 0.06)";
+      o.fillRect(sX, sY, sSize, sSize);
+      o.strokeStyle = "#a62b24";
+      o.lineWidth = 3.5;
+      o.strokeRect(sX, sY, sSize, sSize);
+
+      o.fillStyle = "#a62b24";
+      o.font = "bold 24px 'Noto Serif SC', serif";
+      o.textAlign = "center";
+      o.textBaseline = "middle";
+      if (sealName.length === 1) {
+        o.fillText(sealName, sX + sSize / 2, sY + sSize / 2);
       } else {
-        o.fillText(customSealText.slice(0, 1), sealX + sealW / 2, sealY + sealW / 2 - 14);
-        o.fillText(customSealText.slice(1, 2), sealX + sealW / 2, sealY + sealW / 2 + 16);
+        o.fillText(sealName.slice(0, 1), sX + sSize / 2, sY + sSize / 2 - 12);
+        o.fillText(sealName.slice(1, 2), sX + sSize / 2, sY + sSize / 2 + 14);
       }
 
-      // 底部释义段落排版
-      o.fillStyle = "#3e3328";
-      o.font = "22px 'PingFang SC', serif";
-      o.textAlign = "left";
-      o.textBaseline = "top";
-      const descLine = `造字释义: ${curChar.info.zh.slice(0, 52)}...`;
-      o.fillText(descLine, deskX + 8, deskY + deskBoxSize + 36);
+      // 7. 下半部：中式竖向古典文本排版（右起竖排）
+      const descText = curChar.info.zh.replace(/《|》|“|”/g, "");
+      const colXStart = out.width - 130;
+      const colYStart = 800;
+      const lineHeight = 28;
+      const colWidth = 34;
+      const maxLines = 14;
 
-      // 最底部防伪印与日期
-      o.fillStyle = "#8a7a67";
-      o.font = "17px sans-serif";
-      const dateStr = new Date().toLocaleDateString();
-      o.fillText(`雅赏日期: ${dateStr}`, deskX + 8, deskY + deskBoxSize + 78);
+      o.save();
+      o.fillStyle = "#4a3c30";
+      o.font = "17px 'Noto Serif SC', 'Kaiti SC', serif";
+      o.textAlign = "center";
 
-      o.textAlign = "right";
-      o.fillText("东方文字美学数字典藏", deskX + deskBoxSize - 8, deskY + deskBoxSize + 78);
+      let charIdx = 0;
+      for (let col = 0; col < 6 && charIdx < descText.length; col++) {
+        const curColX = colXStart - col * colWidth;
+        for (let row = 0; row < maxLines && charIdx < descText.length; row++) {
+          const ch = descText[charIdx++];
+          o.fillText(ch, curColX, colYStart + row * lineHeight);
+        }
+      }
+      o.restore();
 
+      // 8. 底部题花与典藏信息
+      o.strokeStyle = "#d6cbba";
+      o.beginPath();
+      o.moveTo(100, 1290);
+      o.lineTo(out.width - 100, 1290);
+      o.stroke();
+
+      o.fillStyle = "#968776";
+      o.font = "13px -apple-system, sans-serif";
+      o.textAlign = "center";
+      o.letterSpacing = "1.5px";
+      const today = new Date().toISOString().slice(0, 10).replace(/-/g, " . ");
+      o.fillText(`东方文字美学数字工坊  ·  ${today}`, out.width / 2, 1330);
+
+      // 下载生成的文件
       const link = document.createElement("a");
       link.download = `字里乾坤_${curChar.modern}_文创书签.png`;
       link.href = out.toDataURL("image/png");
       link.click();
     }
 
-    // 古字猜猜看游戏引擎
-    let currentQuizChar = null;
-    function generateQuiz() {
-      document.getElementById("gameFeedback").innerText = "";
-      const randomIdx = Math.floor(Math.random() * etymologyData.length);
-      currentQuizChar = etymologyData[randomIdx];
-
-      // 渲染甲骨文字形
-      document.getElementById("gameCard").innerHTML = `
-        <svg viewBox="0 0 100 100" stroke-width="7" stroke="#1b1918" fill="none">
-          ${currentQuizChar.steps[0].path}
-        </svg>
-      `;
-
-      // 抽取 3 个干扰项
-      const choices = [currentQuizChar];
-      while (choices.length < 4) {
-        const r = etymologyData[Math.floor(Math.random() * etymologyData.length)];
-        if (!choices.some(c => c.id === r.id)) choices.push(r);
-      }
-      choices.sort(() => Math.random() - 0.5);
-
-      const optBox = document.getElementById("gameOptions");
-      optBox.innerHTML = "";
-      choices.forEach(c => {
-        const btn = document.createElement("button");
-        btn.className = "game-opt-btn";
-        const label = curLang === "zh" ? `${c.modern} (${c.meanings.zh})` : `${c.modern} - ${c.meanings[curLang]}`;
-        btn.innerText = label;
-        btn.onclick = () => checkQuizAnswer(c.id);
-        optBox.appendChild(btn);
-      });
-    }
-
-    function checkQuizAnswer(selectedId) {
-      const fb = document.getElementById("gameFeedback");
-      if (selectedId === currentQuizChar.id) {
-        playChimeSound();
-        fb.style.color = "#2b7a3e";
-        fb.innerText = i18n[curLang].gameCorrect;
-        setTimeout(() => {
-          selectChar(currentQuizChar.id);
-          switchView("studio");
-        }, 1200);
-      } else {
-        fb.style.color = "#a62b24";
-        fb.innerText = i18n[curLang].gameWrong;
-      }
-    }
-
-    // 初始化运行
+    // 页面初始化
     renderCharSelector();
     renderEvolutionLine();
     updateEtymologyText();
