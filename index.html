@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>字里乾坤：象形字交互体验馆</title>
   <style>
     :root {
@@ -19,7 +19,7 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: "PingFang SC", "Hiragino Sans GB", "Noto Serif SC", "Kaiti SC", STKaiti, serif;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Serif SC", "Kaiti SC", STKaiti, serif;
       -webkit-user-select: none;
       user-select: none;
     }
@@ -35,61 +35,75 @@
       flex-direction: column;
     }
 
-    /* 顶部导航与精简语言切换 */
+    /* 顶部导航与响应式排版 */
     header {
-      background: rgba(255, 255, 255, 0.7);
+      background: rgba(255, 255, 255, 0.88);
       backdrop-filter: blur(10px);
       border-bottom: 2px solid var(--wood);
-      padding: 12px 30px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      padding: 10px 20px;
       position: sticky;
       top: 0;
       z-index: 100;
     }
 
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
+      flex: 1;
+      min-width: 0;
     }
 
     .seal-box {
       background: var(--cinnabar);
       color: #fff;
-      font-size: 16px;
-      padding: 4px 8px;
+      font-size: 14px;
+      padding: 3px 8px;
       border-radius: 4px;
       font-weight: 900;
-      letter-spacing: 2px;
-      box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+      letter-spacing: 1px;
+      box-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+      flex-shrink: 0;
     }
 
     h1 {
-      font-size: 1.3rem;
+      font-size: 1.15rem;
       color: var(--wood);
-      letter-spacing: 2px;
+      letter-spacing: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .lang-group {
       display: flex;
-      gap: 6px;
+      gap: 3px;
       background: #e3d8c8;
-      padding: 4px;
+      padding: 3px;
       border-radius: 20px;
+      flex-shrink: 0;
     }
 
     .lang-btn {
       border: none;
       background: transparent;
-      padding: 4px 14px;
-      border-radius: 16px;
+      padding: 4px 10px;
+      border-radius: 14px;
       cursor: pointer;
-      font-size: 0.82rem;
+      font-size: 0.75rem;
       font-weight: 700;
       color: var(--wood);
       transition: all 0.2s ease;
+      white-space: nowrap;
     }
 
     .lang-btn.active {
@@ -97,16 +111,36 @@
       color: #fff;
     }
 
+    /* 手机端专门适配导航栏布局 */
+    @media (max-width: 600px) {
+      header {
+        padding: 8px 14px;
+      }
+      .header-inner {
+        flex-wrap: wrap;
+      }
+      .brand {
+        width: 100%;
+        margin-bottom: 4px;
+      }
+      h1 {
+        font-size: 1rem;
+      }
+      .lang-group {
+        margin-left: auto;
+      }
+    }
+
     /* 主布局 */
     .main-wrap {
       flex: 1;
       max-width: 1200px;
       width: 100%;
-      margin: 20px auto;
-      padding: 0 20px;
+      margin: 16px auto;
+      padding: 0 16px;
       display: grid;
       grid-template-columns: 380px 1fr;
-      gap: 24px;
+      gap: 20px;
     }
 
     @media (max-width: 900px) {
@@ -117,76 +151,71 @@
 
     /* 左侧控制区 */
     .panel {
-      background: rgba(255, 255, 255, 0.88);
+      background: rgba(255, 255, 255, 0.9);
       border-radius: 14px;
       border: 1px solid #d5c8b5;
-      padding: 20px;
-      box-shadow: 0 10px 25px var(--shadow);
+      padding: 16px;
+      box-shadow: 0 8px 20px var(--shadow);
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
 
     .panel-title {
-      font-size: 1.05rem;
+      font-size: 0.95rem;
       font-weight: 700;
       color: var(--cinnabar);
       border-left: 4px solid var(--cinnabar);
-      padding-left: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      padding-left: 8px;
     }
 
-    /* 字选择框 */
     .char-selector {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
-      gap: 8px;
+      gap: 6px;
     }
 
     .char-pill {
       border: 1px solid #d3c4af;
-      border-radius: 10px;
-      padding: 10px 0;
+      border-radius: 8px;
+      padding: 8px 0;
       background: #faf6f0;
       cursor: pointer;
       display: flex;
       flex-direction: column;
       align-items: center;
-      transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     .char-pill .ancient-preview {
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
       fill: var(--ink);
     }
 
     .char-pill .modern-txt {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: bold;
-      margin-top: 4px;
+      margin-top: 3px;
       color: #666;
     }
 
     .char-pill.active, .char-pill:hover {
       border-color: var(--cinnabar);
       background: #fff;
-      transform: translateY(-4px);
-      box-shadow: 0 4px 10px rgba(166, 43, 36, 0.15);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(166, 43, 36, 0.15);
     }
 
     .char-pill.active .modern-txt {
       color: var(--cinnabar);
     }
 
-    /* 演变轨迹 */
     .evolution-box {
       background: #fdfaf6;
       border: 1px dashed #cfc2ae;
       border-radius: 10px;
-      padding: 14px 8px;
+      padding: 10px 6px;
     }
 
     .evolution-timeline {
@@ -200,20 +229,16 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       cursor: pointer;
-      padding: 6px;
+      padding: 4px 2px;
       border-radius: 6px;
       transition: background 0.2s, transform 0.2s;
     }
 
-    .evo-step:hover {
-      background: rgba(166, 43, 36, 0.06);
-    }
-
     .evo-glyph {
-      width: 44px;
-      height: 44px;
+      width: 38px;
+      height: 38px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -230,12 +255,12 @@
     }
 
     .evo-glyph span {
-      font-size: 26px;
+      font-size: 22px;
       font-weight: 500;
     }
 
     .evo-name {
-      font-size: 11px;
+      font-size: 10px;
       color: #7b6d5e;
       font-weight: 600;
     }
@@ -248,7 +273,7 @@
       padding: 8px;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 600;
       display: flex;
       justify-content: center;
@@ -263,11 +288,11 @@
     }
 
     .etymology-box {
-      font-size: 0.92rem;
-      line-height: 1.7;
+      font-size: 0.88rem;
+      line-height: 1.65;
       color: #3e3328;
       background: #faf6f0;
-      padding: 14px;
+      padding: 12px;
       border-radius: 8px;
       border-left: 3px solid #b5a28c;
     }
@@ -276,19 +301,19 @@
     .workshop {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 12px;
       align-items: center;
     }
 
     .canvas-desk {
       position: relative;
       width: 100%;
-      max-width: 540px;
+      max-width: 500px;
       aspect-ratio: 1 / 1;
       background: #fffefb;
       border: 3px solid var(--wood);
       border-radius: 12px;
-      box-shadow: 0 16px 36px rgba(0,0,0,0.1);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.08);
       overflow: hidden;
       touch-action: none;
     }
@@ -336,38 +361,38 @@
 
     .desk-bar {
       width: 100%;
-      max-width: 540px;
+      max-width: 500px;
       background: white;
       border-radius: 10px;
       border: 1px solid #dcd1c2;
-      padding: 12px 18px;
+      padding: 10px 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 4px 12px var(--shadow);
+      box-shadow: 0 4px 10px var(--shadow);
     }
 
     .tools-left {
       display: flex;
       align-items: center;
-      gap: 14px;
-      font-size: 0.85rem;
+      gap: 12px;
+      font-size: 0.82rem;
     }
 
     .tools-right {
       display: flex;
-      gap: 8px;
+      gap: 6px;
     }
 
     .action-btn {
-      padding: 8px 14px;
+      padding: 7px 12px;
       border-radius: 6px;
       border: 1px solid #c7b9a5;
       background: white;
       color: var(--wood);
       cursor: pointer;
       font-weight: 600;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       transition: all 0.2s;
     }
 
@@ -385,12 +410,13 @@
       background: #8b231c;
     }
 
+    /* 真实评分印章 */
     .score-badge {
       position: absolute;
-      top: 20px;
-      right: 20px;
-      width: 90px;
-      height: 90px;
+      top: 18px;
+      right: 18px;
+      width: 96px;
+      height: 96px;
       border: 3px dashed var(--cinnabar);
       border-radius: 50%;
       color: var(--cinnabar);
@@ -400,7 +426,7 @@
       justify-content: center;
       transform: rotate(-15deg) scale(0);
       transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      background: rgba(255, 240, 240, 0.85);
+      background: rgba(255, 240, 240, 0.92);
       pointer-events: none;
       z-index: 20;
     }
@@ -418,22 +444,28 @@
     .score-txt {
       font-size: 10px;
       font-weight: bold;
-      margin-top: 2px;
+      margin-top: 3px;
+    }
+
+    .score-sub {
+      font-size: 8px;
+      opacity: 0.8;
     }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="brand">
-      <div class="seal-box" id="logoTag">象形</div>
-      <h1 id="mainTitle">字里乾坤 · 象形字演变探索馆</h1>
-    </div>
-    <!-- 精简语言按钮标签：中文 / EN / BM -->
-    <div class="lang-group">
-      <button class="lang-btn active" onclick="setLang('zh')">中文</button>
-      <button class="lang-btn" onclick="setLang('en')">EN</button>
-      <button class="lang-btn" onclick="setLang('ms')">BM</button>
+    <div class="header-inner">
+      <div class="brand">
+        <div class="seal-box" id="logoTag">象形</div>
+        <h1 id="mainTitle">字里乾坤 · 象形字演变探索馆</h1>
+      </div>
+      <div class="lang-group">
+        <button class="lang-btn active" onclick="setLang('zh')">中文</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('ms')">BM</button>
+      </div>
     </div>
   </header>
 
@@ -443,16 +475,16 @@
         <div class="panel-title" id="tChooseChar">
           <span>选择字例</span>
         </div>
-        <div class="char-selector" id="charList" style="margin-top: 12px;"></div>
+        <div class="char-selector" id="charList" style="margin-top: 10px;"></div>
       </div>
 
       <div>
         <div class="panel-title" id="tEvolution">
           <span>字形演变轨迹</span>
         </div>
-        <div class="evolution-box" style="margin-top: 12px;">
+        <div class="evolution-box" style="margin-top: 10px;">
           <div class="evolution-timeline" id="evoTimeline"></div>
-          <button class="play-morph-btn" style="margin-top: 12px;" onclick="playEvolution()" id="btnPlayEvo">
+          <button class="play-morph-btn" style="margin-top: 10px;" onclick="playEvolution()" id="btnPlayEvo">
             ▶ 动态演示演变过程
           </button>
         </div>
@@ -462,7 +494,7 @@
         <div class="panel-title" id="tEtymology">
           <span>造字本义与释读</span>
         </div>
-        <div class="etymology-box" id="etymologyContent" style="margin-top: 12px;"></div>
+        <div class="etymology-box" id="etymologyContent" style="margin-top: 10px;"></div>
       </div>
     </aside>
 
@@ -472,9 +504,11 @@
         <div class="trace-layer" id="traceBox"></div>
         <canvas id="paintCanvas" width="800" height="800"></canvas>
         
+        <!-- 评分印章反馈 -->
         <div class="score-badge" id="scoreBadge">
-          <span class="score-num" id="scoreVal">95</span>
+          <span class="score-num" id="scoreVal">92</span>
           <span class="score-txt" id="scoreVerdict">入木三分</span>
+          <span class="score-sub" id="scoreSub">重合度评分</span>
         </div>
       </div>
 
@@ -486,13 +520,13 @@
           </label>
           <label>
             <span id="txtBrush">笔触</span>:
-            <input type="range" id="penSize" min="10" max="36" value="18" style="vertical-align: middle;">
+            <input type="range" id="penSize" min="10" max="36" value="18" style="vertical-align: middle; width: 60px;">
           </label>
         </div>
 
         <div class="tools-right">
           <button class="action-btn" onclick="wipeBoard()" id="btnWipe">清空</button>
-          <button class="action-btn" onclick="evaluateWriting()" id="btnGrade" style="background: #fdf3e7; color: #a65b00; border-color: #f1cf9b;">
+          <button class="action-btn" onclick="evaluateRealScore()" id="btnGrade" style="background: #fdf3e7; color: #a65b00; border-color: #f1cf9b;">
             测契合度
           </button>
           <button class="action-btn primary" onclick="exportPainting()" id="btnExport">盖印保存</button>
@@ -502,7 +536,6 @@
   </main>
 
   <script>
-    // 依图片严谨还原的字形演变矢量数据
     const etymologyData = [
       {
         id: "sun",
@@ -517,7 +550,7 @@
         traceSvg: `<ellipse cx="50" cy="50" rx="30" ry="34" /><circle cx="50" cy="50" r="7" fill="#1b1918" />`,
         info: {
           zh: "象形字。外层不规则圆轮象征发光浑圆的太阳，中心一实体粗圆点表示并非空心发光体。《说文解字》：“日，实也。太阳之精。象形。”体现古人对实体重力天体的敏锐观察。",
-          en: "Pictograph of the sun. The outer circular outline mirrors the silhouette of the sun, while the solid core mark signifies it as a substantial, luminous celestial body, not an empty void.",
+          en: "Pictograph of the sun. The outer circular outline mirrors the silhouette of the sun, while the solid core mark signifies it as a substantial luminous celestial body.",
           ms: "Aksara piktografik matahari. Bentuk bulatan di luar mencerminkan matahari yang memancar, manakala titik padu di tengah menandakan ketumpatan jasad cakerawala yang nyata."
         }
       },
@@ -534,7 +567,7 @@
         traceSvg: `<path d="M38 18 C37 40 37 60 38 82 C56 75 66 58 64 24 Z" /><ellipse cx="49" cy="50" rx="2.5" ry="6" fill="#1b1918"/>`,
         info: {
           zh: "象形字。古人绘制月亮特意采用蛾眉月/半弦月形态，并在内侧加一阴影竖画。因月亮多亏缺而少圆满，以此与浑圆的“日”形成鲜明对比。《说文》：“月，阙也。太阴之精。”",
-          en: "Pictograph representing the moon. Drawn as a crescent with a faint core line to capture waxing and waning phases, deliberately distinguishing it from the full circular sun.",
+          en: "Pictograph representing the moon. Drawn as a crescent with a core mark to capture waxing and waning phases, deliberately distinguishing it from the full circular sun.",
           ms: "Piktograf berbentuk bulan sabit. Dilukis melengkung separa penuh bagi mencerminkan fasa bulan yang berubah-ubah, sekali gus membezakannya daripada matahari yang bulat."
         }
       },
@@ -608,6 +641,7 @@
       }
     ];
 
+    // 精炼短标题，彻底避免挤占空间
     const i18n = {
       zh: {
         tag: "象形",
@@ -621,40 +655,59 @@
         wipe: "清空",
         grade: "测契合度",
         export: "盖印保存",
-        congrats: ["粗具神韵", "骨力尽现", "入木三分", "妙笔生花"]
+        congrats: {
+          low: "信手涂鸦",
+          mid: "略具形貌",
+          good: "骨力尽现",
+          perfect: "入木三分"
+        },
+        scoreSub: "契合度"
       },
       en: {
-        tag: "Origins",
-        title: "Pictogram Studio: Evolution & Calligraphy",
+        tag: "Roots",
+        title: "Pictogram Studio",
         choose: "Select Character",
         evo: "Script Evolution Line",
         play: "▶ Play Morphing Animation",
         etym: "Original Meaning & Etymology",
-        guide: "Tracing Guide",
-        brush: "Brush Size",
+        guide: "Guide",
+        brush: "Brush",
         wipe: "Clear",
-        grade: "Evaluate",
-        export: "Stamp & Save",
-        congrats: ["Good Start!", "Well Shaped!", "Masterful!", "Legendary!"]
+        grade: "Score",
+        export: "Save",
+        congrats: {
+          low: "Needs Practice",
+          mid: "Good Start",
+          good: "Well Shaped",
+          perfect: "Masterful!"
+        },
+        scoreSub: "Match Accuracy"
       },
       ms: {
         tag: "Aksara",
-        title: "Studio Piktograf: Garis Evolusi & Menulis",
+        title: "Studio Piktograf",
         choose: "Pilih Aksara",
         evo: "Rentetan Evolusi Aksara",
-        play: "▶ Mainkan Animasi Evolusi",
+        play: "▶ Mainkan Animasi",
         etym: "Etimologi & Makna Asal",
-        guide: "Panduan Garis",
-        brush: "Saiz Berus",
+        guide: "Panduan",
+        brush: "Berus",
         wipe: "Padam",
-        grade: "Uji Keserasian",
-        export: "Cap & Simpan",
-        congrats: ["Permulaan Baik", "Bentuk Tepat", "Gaya Mahir", "Karya Agung"]
+        grade: "Uji Skor",
+        export: "Simpan",
+        congrats: {
+          low: "Perlu Latihan",
+          mid: "Permulaan Baik",
+          good: "Bentuk Tepat",
+          perfect: "Karya Agung!"
+        },
+        scoreSub: "Ketepatan"
       }
     };
 
     let curLang = "zh";
     let curChar = etymologyData[0];
+    let currentTraceSvg = curChar.traceSvg;
 
     function renderCharSelector() {
       const box = document.getElementById("charList");
@@ -675,6 +728,7 @@
 
     function selectChar(id) {
       curChar = etymologyData.find(c => c.id === id);
+      currentTraceSvg = curChar.traceSvg;
       renderCharSelector();
       renderEvolutionLine();
       updateEtymologyText();
@@ -693,6 +747,7 @@
         item.title = `${displayName}`;
         item.onclick = () => {
           if (step.path) {
+            currentTraceSvg = step.path;
             document.getElementById("traceBox").innerHTML = `
               <svg viewBox="0 0 100 100">${step.path}</svg>
             `;
@@ -718,7 +773,7 @@
       const traceBox = document.getElementById("traceBox");
       traceBox.innerHTML = `
         <svg viewBox="0 0 100 100">
-          ${curChar.traceSvg}
+          ${currentTraceSvg}
         </svg>
       `;
     }
@@ -738,19 +793,25 @@
         if (s.path) {
           traceBox.innerHTML = `<svg viewBox="0 0 100 100" style="stroke: #a62b24;">${s.path}</svg>`;
         } else {
-          traceBox.innerHTML = `<span style="font-size: 160px; color: #a62b24;">${s.text}</span>`;
+          traceBox.innerHTML = `<span style="font-size: 140px; color: #a62b24;">${s.text}</span>`;
         }
 
         const stepEls = document.querySelectorAll(".evo-step");
         stepEls.forEach((el, i) => {
-          el.style.transform = i === stepIndex ? "scale(1.18)" : "scale(1)";
+          el.style.transform = i === stepIndex ? "scale(1.15)" : "scale(1)";
           el.style.background = i === stepIndex ? "#fae8e6" : "transparent";
         });
 
         stepIndex++;
         if (stepIndex >= curChar.steps.length) {
           clearInterval(animTimer);
-          setTimeout(loadTracingGuide, 1200);
+          setTimeout(() => {
+            loadTracingGuide();
+            stepEls.forEach(el => {
+              el.style.transform = "scale(1)";
+              el.style.background = "transparent";
+            });
+          }, 1200);
         }
       }, 700);
     }
@@ -772,6 +833,7 @@
       document.getElementById("btnWipe").innerText = t.wipe;
       document.getElementById("btnGrade").innerText = t.grade;
       document.getElementById("btnExport").innerText = t.export;
+      document.getElementById("scoreSub").innerText = t.scoreSub;
 
       renderEvolutionLine();
       updateEtymologyText();
@@ -850,34 +912,91 @@
       document.getElementById("traceBox").style.opacity = show ? "0.22" : "0";
     }
 
-    function evaluateWriting() {
-      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-      let filledPixels = 0;
-      for (let i = 3; i < imgData.length; i += 4) {
-        if (imgData[i] > 20) filledPixels++;
+    // 真正准确的图像比对评分系统 (通过离屏 Canvas 比对重合像素)
+    function evaluateRealScore() {
+      const userImg = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      let userPixelCount = 0;
+      for (let i = 3; i < userImg.data.length; i += 4) {
+        if (userImg.data[i] > 30) userPixelCount++;
       }
 
-      if (filledPixels < 300) {
+      if (userPixelCount < 400) {
         const tip = {
-          zh: "画板空空如也，请挥毫下笔！",
-          en: "The canvas is empty, please write something first!",
-          ms: "Papan lukis kosong, sila tulis dahulu!"
+          zh: "请先在画板上挥毫书写！",
+          en: "Please write on the canvas first!",
+          ms: "Sila tulis di papan terlebih dahulu!"
         };
         alert(tip[curLang] || tip.zh);
         return;
       }
 
-      const score = Math.floor(86 + Math.random() * 13);
-      const verdicts = i18n[curLang].congrats;
-      const verdict = verdicts[Math.floor(Math.random() * verdicts.length)];
+      // 创建离屏 Canvas 渲染标准字模并对比
+      const offCanvas = document.createElement("canvas");
+      offCanvas.width = canvas.width;
+      offCanvas.height = canvas.height;
+      const offCtx = offCanvas.getContext("2d");
 
-      document.getElementById("scoreVal").innerText = score;
-      document.getElementById("scoreVerdict").innerText = verdict;
+      // 构建 SVG 临时对象
+      const svgString = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 100 100">
+          <g stroke="#000000" fill="none" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+            ${currentTraceSvg}
+          </g>
+        </svg>
+      `;
 
-      const badge = document.getElementById("scoreBadge");
-      badge.classList.remove("show");
-      void badge.offsetWidth;
-      badge.classList.add("show");
+      const img = new Image();
+      const blob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      img.onload = () => {
+        // 让标准字形居中按比例绘制
+        offCtx.drawImage(img, 112, 112, 576, 576);
+        URL.revokeObjectURL(url);
+
+        const targetData = offCtx.getImageData(0, 0, canvas.width, canvas.height).data;
+        const userData = userImg.data;
+
+        let intersection = 0; // 重合命中点
+        let targetTotal = 0;   // 模板所需点
+        let userExtra = 0;     // 出格多余乱涂点
+
+        // 下采样快速比对
+        for (let i = 3; i < targetData.length; i += 16) {
+          const tFilled = targetData[i] > 30;
+          const uFilled = userData[i] > 30;
+
+          if (tFilled) targetTotal++;
+          if (tFilled && uFilled) intersection++;
+          if (!tFilled && uFilled) userExtra++;
+        }
+
+        // 真实命中召回率 (覆盖了多少标准笔画)
+        const recall = intersection / (targetTotal || 1);
+        // 出格惩罚比率 (出格乱画会扣分)
+        const penaltyRatio = Math.min(1, userExtra / (targetTotal * 1.5));
+
+        // 综合得分计算 (0 ~ 100)
+        let calcScore = Math.round((recall * 88 + 12) * (1 - penaltyRatio * 0.45));
+        calcScore = Math.max(15, Math.min(98, calcScore));
+
+        // 根据真实分数派发评语
+        const c = i18n[curLang].congrats;
+        let verdict = c.low;
+        if (calcScore >= 90) verdict = c.perfect;
+        else if (calcScore >= 78) verdict = c.good;
+        else if (calcScore >= 60) verdict = c.mid;
+
+        document.getElementById("scoreVal").innerText = calcScore;
+        document.getElementById("scoreVerdict").innerText = verdict;
+
+        const badge = document.getElementById("scoreBadge");
+        badge.classList.remove("show");
+        void badge.offsetWidth;
+        badge.classList.add("show");
+      };
+
+      img.src = url;
     }
 
     function hideBadge() {
